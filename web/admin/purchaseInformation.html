@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <title>采购订单信息详细 </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+        <link rel="stylesheet" href="./css/backstage.css" media="all"> 
+    </head>
+    
+    <body>
+       <div class="wrap">
+        <div class="x-nav">
+            <div class="title">
+              <a><cite>国际采购订单管理 >> 采购订单信息</cite></a>              
+              <a  class="back" onclick="window.history.back(-1)">返回上页</a>
+            </div>
+          
+        </div>
+       <div class="x-body">  
+		 <form action="" class="fom" id="newsform" method="POST"  enctype="multipart/form-data">
+			<table class="infotable detatable" >
+                  <tr><td width="20%"><label>订单中文名称：</label></td><td width="80%"><p id="orderNamech">订单的中文名称</p></td></tr>     
+                  <tr><td><label>订单英文名称：</label></td><td><p  id="orderNameen">订单的英文名称</p></td></tr>               
+                  <tr><td><label>发布日期：</label></td><td><p id="publishtime">2021-1-1</p></td></tr>
+                  <tr><td><label>订单分类：</label></td><td><p id="businessName">轻工业类</p> </td></tr>  
+                  <tr><td><label>点  击  量：</label></td><td><p id="clickcount">888</p></td></tr>               
+                  <tr><td><label>订单状态：</label></td><td><p id="tradeflag">进行中</p> </td></tr>               
+                  <tr><td><label>企业名称：</label></td><td><p id="comname">企业名称（前台不显示）</p></td></tr>
+                  <tr><td><label>首页推荐：</label></td><td><p id="recomflag">是</p></td></tr>
+                  <tr><td><label>订单摘要：</label></td><td><p id="summary">汽车润滑油、工业用油、润滑脂、防冻液、车用尿素、汽车养护品等产品</p></td></tr>
+                  <tr><td><label>订单图片：</label></td><td><p><img  id="img1" src="" alt="" width="260" height="160"></p></td></tr>                
+                  <tr><td><label>订单图片：</label></td><td><p><img  id="img2" src="" alt="" width="260" height="160"></p></td></tr>                
+                  <tr><td><label>订单图片：</label></td><td><p><img  id="img3" src="" alt=""  width="260" height="160" ></p></td></tr>                
+
+                  <tr><td><label>详细介绍：</label></td><td><p id="details"><img src="images/u4476.png" alt="" width="500"></p></td></tr>                                            
+ 			  <tr>
+				<td> </td>
+				<td colspan="2">	
+					<!--		  
+					<input id="publishbtn" type="button"  class="btn" value="发布" onclick="sendData()"/>                  
+					<input id="modifybtn" type="button"  class="btn" value="修改" onclick="sendData()"/>  				 
+					  -->
+				</td>
+			  </tr>
+                
+                </table> 
+                 <input type="hidden"  id="orderid" name="orderid" /> 
+         </form>       
+    </div>
+    </div>
+    
+         <script src="js/jquery.js"></script>
+<script type="text/javascript">
+//向模板填充数据
+function displayDetails(order){
+	$("#orderid").val(order.orderid);
+	$("#orderNamech").html(order.orderNamech); //chinese name of imported goods
+	$("#orderNameen").html(order.orderNameen); //English name of imported goods
+	$("#publishtime").html(order.publishtime); //发布日期：2021-01-05
+	$("#businessName").html(order.businessName); //行业分类：轻工业类
+	$("#clickcount").html(order.clickcount); //点击量：88888
+	var trade="进行中";
+	if(tradeflag == "1"){
+		trade="已完成";
+	}
+	$("#tradeflag").html(trade); //订单状态：已完成
+	$("#comname").html(order.comname); 
+	recom = "否";
+	if(order.recomflag=="1"){
+		recom="是";
+	}
+	$("#recomflag").html(recom); 
+	$("#img1").attr("src","../homeImages/"+order.img1); //img1
+	$("#img2").attr("src","../homeImages/"+order.img2); //img2
+	$("#img3").attr("src","../homeImages/"+order.img3); //img3
+	
+	$("#details").html(order.details); //详细内容
+	
+}
+//获得ajax请求数据,生成列表html
+function createOrder(url){
+	
+	$.ajax({
+		url:url,
+		type:"get",
+		dataType:"json",
+		success:function(result){
+			
+			if(result.message=="success"){
+				
+				displayDetails(result.obj)
+			}
+			
+			
+		}
+	});
+
+}
+//获取请求参数orderid
+function initDetailsPage(){
+	var paramsStr=window.location.search.substring(1);
+	
+	var url="findPurchaseOrderByid"+'?'+paramsStr;
+	
+	createOrder(url)
+}
+/* */
+
+//初始化页面
+	$(function(){
+		initDetailsPage();
+		$("#publishbtn").click(function(){
+			
+			publishInfo();
+		});
+		
+		$("#modifybtn").click(function(){
+		    //window.location.href window.location.href
+			location.href="cgAddModify.html?orderid="+$("#orderid").val();
+		});
+		
+		
+
+	});
+//发布订单信息	
+ function publishInfo(){
+	    var orderid = $("#orderid").val();
+		$.ajax({
+			url:"publishPurchaseOrder?orderid="+orderid,
+			type:"get",
+			dataType:"json",
+			success:function(result){
+				
+				if(result.message=="success"){
+					alert("发布成功");
+				}
+				
+				
+			}
+		});
+ }
+
+</script>
+    </body>
+
+</html>

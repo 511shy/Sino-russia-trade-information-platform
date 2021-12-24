@@ -1,0 +1,156 @@
+﻿/* 公共类修改 */
+body{background-color:#F0F2F5;font-family: '微软雅黑 Bold', '微软雅黑', "宋体" sans-serif;}
+.wrap{width:90%;margin:20px auto;overflow: auto;padding:0px 0px 50px 10px;min-width: 1000px}
+/*密码框眼睛样式*/
+ .password-p {position: relative;}
+ #eyes,#confirmeyes{width: 18px;position: absolute;right:25px; top:8px;}
+ #eyes.adminediteyes,#confirmeyes.adminediteyes{width: 18px;position: absolute;right:120px; top:8px;}
+ #eyes.tdeyes {right:190px; top:18px;}
+ #eyes.tdeyes_ordinary {right:420px; top:18px;}
+/* 改字体大小 */
+[type=date]{font-size:14px}
+cite{font-size:18px}
+p{font-size:14px}
+input[type="button"],input[type="submit"],button{border:0px;border-radius:4px;}
+textarea,select,input{border:1px solid #ccc;font-size:14px;padding:2px 0px 2px 10px}
+input,select{height:28px;border:1px solid #ccc;;font-size:14px;vertical-align: middle;}
+.inp{width: 90%}
+.com_name{width: 72%}
+.vip_comname{width: 660px}
+.lg{width: 300px}
+.msg{color:#D9001B;font-size:12px!important;margin-left: 10px}
+/*统一按钮样式*/
+.btn{background-color: #3467cc;color:white;margin: 10px 0px;padding:2px 20px}
+.btn1{background-color: white;margin-left:10px;padding:0px 20px;border:1px solid #ccc;font-size:14px;padding:5px 15px}
+.btn2{margin-left:10px;padding:0px 20px;background-color:#aaaaaa;color:white;border:0;height:26px}
+/* 图片上传样式修改 */
+.pic{width:200px;height:200px;background-color:#cccccc;position:relative;float:left}
+/* 上传图片公共样式 */
+.files .imgdiv{background-color: #E4E4E4;}
+.files .imgdiv img{width:100%;heighgt:100%}
+.files .but-upload{position: relative;background-color: #ccc;color:white;cursor: pointer;display:block;width:100%;padding:10px 0px;text-align: center;padding: 5px 0px;font-size: 14px;}
+.files .but-upload input{position: absolute;  width:100%; right: 0; bottom: 0; opacity: 0;height: 100%; cursor:pointer;}
+/*公共标题*/
+.title{overflow: hidden;padding:10px 0px}
+.title a:nth-child(1){font-weight:700;color:#3467cc;margin-right:50px}
+.title a:nth-child(2),.title a:nth-child(3){background-color:#999;padding:6px 20px;border-radius:4px;color:white;font-size:14px}
+.title a:nth-child(2):hover,.title a:nth-child(3):hover{background-color:#3467cc;cursor:pointer}
+.title .back{float: right;}
+/*公共标题和检索区域*/
+.x-nav,.x-body,.form{ background-color: #ffffff;margin:10px 0px;overflow: hidden;}
+.x-nav{padding: 0 20px; border-bottom: 1px solid #e5e5e5;}   
+.form{padding:10px 0px;color:rgb(85, 85, 85);overflow: hidden;}
+.form p{float: left;margin:0px 5px;}
+.form p:nth-child(1){margin-left: 10px}
+.form span{font-size:13px; margin-right: 10px;line-height:26px;}
+.form input{font-size:13px;width:130px;height:26px;padding:0px}
+.form button:hover{background-color:#3467cc;cursor:pointer}
+/*公共分页*/
+.pagelist {width:90%;margin:20px auto;}
+.pagelist .nav{overflow: hidden;margin:20px 0px}
+.pagelist .nav li{float: left;}
+.pagelist .nav li a{display:block;border:1px solid #ccc;padding:5px 10px;padding: 7px 12px;font-size: 12px;color:#337ab7}
+.pagelist .nav .active a{background-color: #3263C1;color:white;}
+/*  公共查询表格 */
+#table th{background-color:rgb(242,242,242)!important;color:#8c8c8c;font-weight:bold;border:none!important;text-align: center}
+#table tr td{color:rgb(85,85,85);border:none!important;text-align: center}
+#table tr:nth-child(even){background:#F2F2F2}
+#table tr:nth-child(odd){background:#fff}
+#table { background-color: #ffffff; width:95%;margin:20px auto;border:1px solid #ccc;}
+#table tr td .mlbtn{margin:0px 10px;padding:5px 8px;text-decoration: none}
+#table tr:hover{background:#ddd}
+#table tr td a:hover{color:#D9001B;}
+#table tr td .mlbtn:hover{color:white;background:#3467cc;}
+.demo {overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display: block;width:300px;margin:0px auto}
+/* 表格链接变色 */
+#table a:hover{color:red;text-decoration:underline}
+/*公共的添加和修改*/
+.fom{padding:20px 0px;background-color:#F2F2F2;width:90%;margin:20px auto;min-width: 1000px;}
+.infotable{font-size:14px;border:0px;width:980px;margin:0px auto}
+.infotable tr td{padding:10px 0px ;}
+
+.infotable tr td:nth-child(1) {text-align: right;}
+.infotable tr td:nth-child(3) {text-align: right;}
+.infotable.cggy tr td:nth-child(3) {text-align: left;}
+.infotable.wmzs tr td:nth-child(1) {text-align: right;}
+.infotable.wmzs tr td:nth-child(2) {text-align: right;}
+.infotable.wmzs tr td:nth-child(3) {text-align: left;}
+.infotable.wmzs tr td:nth-child(3) button {margin-left:10px;}
+
+.infotable tr td textarea{width:90%}
+.infotable tr td label{font-size:14px;margin-right:20px}
+.infotable tr td input {text-indent:12px;}
+.infotable tr td input,.wrap input{text-indent:12px;}
+.wrap input[type=submit] {text-indent:0;}
+.infotable tr td span{font-size:12px}
+.infotable tr td input[type="button"] {text-indent:0px;}
+.infotable tr td select{display:block;height: 34px}
+.infotable tr td  .content{width: 100%;font-size:14px}
+.lableft{float: left;margin-right: 20px}
+.lableft p {margin-left:10px}
+/*详情页面样式*/
+.detatable tr td p{border-bottom:1px solid #ccc;}
+#details p {text-align:left;}
+
+
+/*物流tab页*/
+.tabpage{overflow: hidden;padding-top:20px;width:90%;margin:0px auto;min-width: 1000px;}
+.tabpage li{float: left;margin: 0px 3px}
+.tabpage li a{display: block;border:1px solid; #ccc;padding: 5px 0px;width: 140px;text-align: center;border-radius: 6px 6px 0px 0px;border-bottom: 0px}
+.tabpage li .list{background-color:#3263C1;color:white}
+
+/*新建管理员帐号*/
+.adduser{width:900px;margin:0px auto;}
+.adminimg{float: left;width: 200px;margin:100px 0px }
+.inputright{float: left;}
+.inputright h2{font-size:20px;font-weight: 700px;margin:20px 0px;}
+.inputright p{margin:15px 0px;}
+.inputright p label{display:inline-block;width:120px}
+.inputright p span{margin-left: 10px;}
+.inputright input[type=radio]{margin:0px 5px;}
+.adminimg img { width: 140px; height: 140px; }
+
+/*administration.html 首页管理 */
+.msg-wrap{overflow: hidden;padding-bottom:100px ;}
+.msg-wrap>div{float: left;}
+.msg-wrap .left{ background-color: #fff;padding: 20px;width: 60%;min-width: 630px}
+.msg-wrap .right{margin-left: 20px;width: 30%;min-width:300px}
+.carousel,.code{overflow: hidden;}
+.carousel>div{float: left;margin: 10px;}
+.carousel .describe h3{color: #ccc;margin: 20px 0px;}
+.code>div{float: left;}
+.code .font{width: 100px;}
+.msg-wrap p{margin: 15px 0px;}
+.code .font h3{color: #ccc;margin: 10px 0px 0px 10px;}
+.code .font{text-align: center}
+.right .service{margin: 0px 0px 20px 0px;background-color: #fff;padding: 10px 20px;}
+.msg-wrap div p{font-size:14px}
+.service p label{font-size: 14px;margin-right: 10px;}
+
+
+/* statistics.html  统计分析 */
+.clearfix::after{content:".";display:block;visibility:hidden;height:0;clear:both}
+.content{background-color:white;border-radius:5px;padding:10px 20px}
+.bodytitle{padding:20px 0px;overflow:hidden}
+.bodytitle h2{font-size:18px;font-weight:bold;display:inline-block;margin-right:20px}
+.bodytitle i{display:inline-block;height:2px;background-color:#333333;vertical-align:5px}
+.bodytitle:nth-child(1) i {width:850px;}
+.bodytitle:nth-child(4) i {width:810px;}
+.bodytitle:nth-child(7) i {width:790px;}
+.content .ul1{margin-top:20px;overflow:hidden}
+.content .list{display: flex;flex:1}
+.content .ul1 li{width:200px;background-color:#eeeeee;margin:0px 10px;padding:10px 0px;float:left;border-radius:10px;text-align:center;color:#3263C1}
+.content .ul1 li h3{padding-top:10px;font-size:20px}
+.content .ul1 li strong{padding-top:10px;font-size:50px;display:block}
+.content .ul1 li span{font-size:12px}
+.monthly{margin:50px 0;overflow:hidden}
+.monthly p{margin:20px 0px;font-size:14px}
+.monthly p select{font-size:12px;padding:3px 15px;margin-left:10px}
+.monthly .img1 img{border-radius:20px;border:1px solid #000000}
+.monthly .img1 img:nth-child(1){margin-right:10px}
+
+/*密码框边上的小眼睛*/
+#div_pwd input{float:left}
+#div_pwd img{float:left;margin-left:-22px;margin-top:5px}
+.eye_msg{color:#D9001B;font-size:12px!important;margin-left: 10px;margin-top:6px;display:inline-block;}
+    

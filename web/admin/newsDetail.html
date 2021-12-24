@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>    
+    <head>
+        <meta charset="utf-8">
+        <title> 新闻详细信息 </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+        <link rel="stylesheet" href="./css/backstage.css" media="all"> 
+        <script src="js/jquery.min.js"></script>   
+	    <script>
+	     $(function(){
+	    	//获取news传参(新闻id)    
+	        var searchURL = window.location.search;
+	        searchURL = searchURL.substring(1, searchURL.length);
+	        var newId = searchURL.split("&")[0].split("=")[1];
+	        
+	        $.ajax({
+	            type:"GET",
+	            url:"../news/findNewsById?id="+newId,
+	            dataType:"json",
+	            success:function(data){   
+	            	json_data=eval(data);
+	            	console.log(json_data);
+	 
+	              $("#title p").append(json_data.obj.title);
+	              category="";
+	              if(json_data.obj.category==1){
+	            	  category="国内市场动态 ";
+	              }else if(json_data.obj.category==2){
+	            	  category="国际市场动态";
+	              }else if(json_data.obj.category==3){
+	            	  category="国际贸易最新政策";
+	              }
+	              $("#category p").append(category);
+	       
+	              disp=(json_data.obj.disp==1)?"是":"否";
+	              $("#disp p").append(disp);
+	              $("#publish p").append(json_data.obj.publish);
+	              $("#writer p").append(json_data.obj.writer);
+	             console.log('<img src="../'+json_data.obj.msgpic+'/"  width="260px" height="160px">')
+	              $("#msgpic p").append('<img src="../'+json_data.obj.msgpic+'"  width="260px" height="160px">');
+	              $("#intro p").append(json_data.obj.intro);
+	              $("#content p").append(json_data.obj.content);
+	            }
+	        });    	
+	    });
+	   </script>     
+    </head>    
+    <body>
+     <div class="wrap">
+	        <div class="x-nav">
+	            <div class="title">
+	              <a><cite>新闻资讯管理 >> 新闻详情</cite></a>                
+	              <a href="news.html" class="back">返回上页</a>
+	            </div>          
+	        </div>
+	        <div class="x-body">
+	        	<form action="" class="fom" method="POST"  enctype="multipart/form-data">
+	                <table class="detatable infotable">
+	                  <tr>
+		                  <td width="20%"><label>新闻标题：</label></td>
+		                  <td id="title" width="80%"><p></p></td>
+	                  </tr>      
+	                  <tr>
+	                       <td><label>新闻所属栏目：</label></td>
+	                       <td id="category"><p></p></td>
+	                  </tr>                
+	                  <tr>
+	                  		<td><label>是否推荐：</label></td>
+	                  		<td id="disp"><p></p></td>
+	                  </tr>
+	                  <tr>
+	                  		<td ><label>发布时间：</label></td>
+	                        <td id="publish"><p></p></td>
+	                  </tr>
+	                   <tr>
+	                  		<td ><label>前台登录名：</label></td>
+	                        <td id="writer"><p></p></td>
+	                  </tr>
+	                  <tr>
+	                        <td><label>新闻主图：</label></td>
+	                        <td id="msgpic"><p></p></td>
+	                  </tr>   
+	                  <tr>
+	                  		<td><label>新闻摘要：</label></td>
+	                  		<td id="intro"><p></p></td>
+	                  </tr>
+	                  <tr>
+	                  		<td><label>详细内容：</label></td>
+	                  		<td id="content"><p></p></td>
+	                  </tr>
+	                 </table>
+	            </form>
+	        </div>
+        </div>
+     </body>
+</html>

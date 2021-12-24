@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>资讯修改  </title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="stylesheet" href="./css/x-admin.css" media="all">
+  <link rel="stylesheet" href="./css/backstage.css" media="all">
+  
+  <script>
+	//上传图片显示
+	function filefun(th){	
+	
+	 	var file= th.files[0]
+		if(/image\/\w+/.test(file.type)){
+			   document.getElementsByClassName("msg")[2].innerHTML=""
+             var read=new FileReader()
+             read.readAsDataURL(file)
+             read.onload=function(ev){		            	  
+          	  var img=new Image()
+                var data=this.result;  		            	  		            	  
+                img.src=data	
+                img.onload = function() {
+          		   if(this.width=="260"&&this.height=="160"){
+			            document.getElementById("wsimg").src=data
+			            document.getElementById("wsimg").style.width="150px";
+			            document.getElementById("wsimg").style.height="100px";
+          		   }else{
+          			   document.getElementsByClassName("msg")[2].innerHTML="图片比例不正确"
+          		   }
+          	};		            		  		                 	                  
+             }
+          }
+      else{
+           document.getElementsByClassName("msg")[2].innerHTML="请上传图片格式"
+      } 
+	}
+  </script>
+ 
+</head>
+<body>
+  <div class="wrap">
+	<div class="x-nav">
+		<div class="title">	
+		  <a id="title"><cite>新闻资讯管理 >> 资讯修改</cite></a>      
+		  <a href="news.html" class="back">返回上页</a>
+		</div>
+	  </div>	
+	  <div class="x-body">  
+		 <form action="" class="fom" name="fom" id="newsform" method="POST"  enctype="multipart/form-data">
+			<table class="infotable" >
+			  <tr>         
+				<td width="15%"> 
+				  	<label>资讯标题  </label>              				  
+				</td>
+				<td width="55%">
+					<input type="text" placeholder="输入新闻资讯标题" name="title" class="inp" style="width:474px;" id="newtitle"/>
+				</td>
+				<td width="30%">
+					<span class="msg">*</span>
+				</td>
+			  </tr>
+			  <tr>         
+				<td> 
+				  	<label>所属栏目</label>              				  
+				</td>
+				<td>
+					<select name="category" class="inp">
+						<option value="1">国内市场动态</option>
+						<option value="2">国际市场动态</option>
+						<option value="3">国际贸易最新政策</option>
+					  </select>
+				</td>
+				<td>
+					<span class="msg"></span>
+				</td>
+			  </tr>			 
+			  <tr>         
+				<td> 
+				  	<label>是否推荐</label>              				  
+				</td>
+				<td colspan="2">
+					<div class="sel lableft">
+						<input type="radio" name="disp" value="1" checked>  <label>推荐</label>   
+						<input type="radio" name="disp" value="0"> <label>不推荐</label>
+					</div>
+					 <div><span>(注：默认即推荐到首页展示)</span></div>
+				</td>
+			  </tr>
+			  <tr>         
+				<td> 
+				  	<label>图片上传</label>              				  
+				</td>
+				<td colspan="2">
+				   <div class="lableft">
+						<div class="files" style='width:150px;'>
+							<div class="imgdiv" style='height:100px'><img src="" id="wsimg" /></div>
+							<a href="javascript:;" class="but-upload">                          
+								<input type="file" name="fileImg"  onchange="filefun(this)">上传图片
+							</a>					
+						</div>
+					</div>
+					 <div>
+						<p >建议图片尺寸260*160</p>
+						<p class="msg"></p>
+					</div>
+				</td>				
+			  </tr>
+			  <tr>         
+				<td> 
+				  	<label>新闻摘要</label>              				  
+				</td>
+				<td colspan="2">
+					<p class="msg"></p>
+					<textarea   name="intro" class="inp" style=" height:100px"
+					  placeholder="输入文字摘要，建议200字以内" id="intro"></textarea>
+				  
+					<input type="hidden" value="" name="writer" id="user"> 
+				</td>				
+			  </tr>
+			  <tr>     
+				<td> 
+				  	<label>新闻内容</label>              				  
+				</td>
+				<td colspan="2">
+					<p class="msg"></p>
+					<textarea id="news_content" name="content"   class="content" placeholder="请输入内容" ></textarea>
+				</td>				
+			  </tr>
+			  <tr>
+				<td> </td>
+				<td colspan="2">				  
+					<input type="button" id="publish"  class="btn" value="发布"/>                  
+					<input type="button" id="preview"  class="btn" value="预览"/>  				 
+				</td>
+			  </tr>
+	
+			</table>
+	  </form>
+	
+		
+	  </div>
+  </div>
+ <!-- 初始化KindEditor编辑器 -->
+	<link rel="stylesheet" href="../kindeditor/themes/default/default.css" />
+	<link rel="stylesheet" href="../kindeditor/plugins/code/prettify.css" />
+	<script charset="utf-8" src="../kindeditor/kindeditor-all-min.js"></script>
+	<script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
+	<script charset="utf-8" src="../kindeditor/plugins/code/prettify.js"></script>
+	<script type="text/javascript">	
+	    KindEditor.ready(function(K) {
+	            editor1 = K.create('textarea[name="content"]', {
+	            cssPath : '../kindeditor/plugins/code/prettify.css',
+	            height:'400px',
+				width: '760px',
+	            
+	            uploadJson :'../admin/uploadimg',
+	            //uploadJson : 'article/uploadimg',
+	            //	fileManagerJson : '${APP_PATH}/kindeditor/jsp/file_manager_json.jsp',
+	            allowFileManager : false,
+	            allowImageRemote: false,
+	            afterBlur: function () {  //解决js无法提交的bug
+	                this.sync();
+	            }
+	        });
+	        prettyPrint();
+	    });
+	  
+	</script>    
+</body>
+ <script src="js/jquery.min.js"></script>
+   <script>
+      var newId="";
+	  $(function(){     
+		 //获取news传参(新闻id) --修改新闻   
+	      var searchURL = window.location.search;	      
+		  if(searchURL.length!=0){
+			  searchURL = searchURL.substring(1, searchURL.length);
+		      newId = searchURL.split("&")[0].split("=")[1];
+		      $("#title").html("新闻资讯管理 >> 资讯修改");
+		      newsModify(newId);
+		  }   
+		  else{
+			  $("#title").html("新闻资讯管理 >> 资讯新增");
+		  }
+		  adminuser=getUser();
+		  console.log("mm:"+adminuser)
+		  $("#user").val(adminuser);
+		  //发布和修改
+		  $("#publish").click(function(){
+			  $(".msg").text("")
+            if($("#newtitle").val()==""){
+              $(".msg").eq(0).text("*标题不能为空！")
+            }
+            else if(fom.disp.value==1 && $("#wsimg").attr("src")==""){               	
+            	$(".msg").eq(2).text("*选择推荐，必须上传图片！")
+            }
+            else if($("#intro").val()==""){           	
+            	$(".msg").eq(3).text("新闻摘要不能为空！")
+            }
+            else if($("#intro").val().length>200){           	
+            	$(".msg").eq(3).text("新闻摘要在200字以内")
+            }  
+           // else if($("#news_content").val()==""){
+			else if(editor1.html().trim()==""){
+            	$(".msg").eq(4).text("新闻内容不能为空！")
+            }
+            else {
+              addNews();
+            }
+		  });	
+		  //预览
+		  $("#preview").click(function(){
+			  newsPreview();
+		  });
+		 
+	  }); 	
+	  
+	  
+	
+	 //获取登录账号
+	 function getUser(){
+		 adminuser=null;
+		 $.ajax({
+	         type:"GET",
+	         url:"../admin/getSessionAdmin",
+	         dataType:"json",
+	         async: false,
+	         success:function(data){   
+	         	json_data=eval(data);
+	         	if (json_data.status==200){
+	         		adminuser=json_data.obj.adminName
+	         	}
+	         }
+		 });
+		 return adminuser;
+	 }
+	
+	  function addNews(){ 
+		    editor1.sync();
+		    console.log($(":input[name='content']").val());
+		    
+		    if(newId==""){
+		    	url="../news/savenews"
+		    }else{
+		    	url="../news/updatenews?id="+newId;
+		    }		  
+		    var formData = new FormData($('#newsform')[0]);
+
+
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+              json_data = eval(data);
+              if (json_data.status == 200) {
+                alert("发布成功！");
+                location.href = "news.html";
+              }
+            }
+          });
+	  }
+	  //新闻预览
+	  function newsPreview(){
+		  editor1.sync();
+		  //设置html5本地存储
+		  var formData = new FormData($('#newsform')[0]);
+		  var objData = {};
+		  formData.forEach((value, key) => objData[key] = value);
+		  sessionStorage.setItem("newspre", JSON.stringify(objData));
+		  var tempwindow=window.open('_blank'); 
+		  tempwindow.location.href="newsPreview.html"; 
+	  }
+	  
+	  //新闻修改
+	  function newsModify(newId){
+            $.ajax({
+              type:"GET",
+              url:"../news/findNewsById?id="+newId,
+              dataType:"json",
+              success:function(data){
+                json_data=eval(data);
+                console.log(json_data);
+                $("input[name='title']").val(json_data.obj.title);
+                $(":input[name='category']").val(json_data.obj.category);
+                console.log("bb:"+json_data.obj.disp);
+
+                //设置value=1 的为checked
+                $(":radio[name='disp'][value="+json_data.obj.disp+"]").attr("checked",true);
+
+                //$(":radio[name='disp']").attr("checked",json_data.obj.disp);
+
+                $("#publish span").append(json_data.obj.publish);
+                $("#writer span").append(json_data.obj.writer);
+                $('#wsimg').attr("src", "../"+json_data.obj.msgpic).css({width:"100%",height:"100%"});
+                $(":input[name='intro']").val(json_data.obj.intro);
+                //富文本内容回显
+                editor1.html(json_data.obj.content);
+
+              }
+            });
+	  }
+	
+  </script>
+</html>

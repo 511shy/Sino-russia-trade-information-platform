@@ -1,0 +1,227 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>中俄贸易供需服务平台管理系统</title>
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+         <script src="./js/jquery.min.js" ></script>
+         <script>         
+
+	 		//刷新时间,刷session 防止网页过期
+	 		function refreshPage()
+	 		{
+	 			$.ajax({
+	 				url:"../admin/refreshSession",
+	 				cache:false
+	 			});
+	 		}
+ 		
+             //不是超级管理员,不显示 系统权限管理这个导航
+             $(function(){
+                 //这个定时器的作用是防止session过期
+    	         setInterval("refreshPage()", 6*1000*20);  //每20分钟
+    	         
+            	 $.ajax({
+            		 url:"../admin/getSessionAdmin",
+            		 dataType:"json",
+            		 success:function(data){
+            			 var role=data.obj.role;
+            			 if(role=="普通管理员"){
+            				 $("#li_system_power").hide();
+            			 }
+            			 $("#roleName").html(data.obj.adminName);
+            		 },
+            		 error:function(){ 
+            		 }
+            	 });
+             });
+             
+             function logout(){
+            	 if(confirm("是否退出？")){
+            		 $.ajax({
+                		 url:"../admin/logout",
+                		 type:"get",
+                		 success:function(result){
+                			 if(result.message=="success"){
+                				 window.location.href="../home_detail/adminlogin.jsp";
+                			 }
+                		 }
+                	 });
+            	 }
+             }
+         </script>
+    </head>
+    <body>
+        <div class="layui-layout layui-layout-admin">
+            <div class="layui-header header header-demo" >
+                <div class="layui-main" >
+                	<div>
+	                    <span >平台管理系统</span>
+	                    <a class="logo" href="./index.html">                    
+	                   		<img src="images/u3739.png" width="275px" height="38px"></img>
+	                    </a>
+                    </div>
+                    <ul class="layui-nav" lay-filter="" id="ulicon">
+                      
+                      <li class="layui-nav-item" id="liicon">
+                        <a href="javascript:;" >当前登陆：<span id="roleName" style="font-size:14px"></span></a>                      
+                      </li>                   
+                      <li class="layui-nav-item x-index" id="liicon">
+                      		<a title="处理" href="javascript:;" onclick="updatePwd('修改密码','updatepwd.html','4','','350')"
+				            class="ml-5" style="text-decoration:none">修改密码</a></li>
+                      <li class="layui-nav-item x-index" id="liicon"><a href="javascript:void(0);" onclick="logout();">退出登陆</a></li>
+                      <li class="layui-nav-item x-index" id="liicon"><a href="../index.jsp" >前台首页</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="layui-side layui-bg-black x-side">
+                <div class="layui-side-scroll">
+                    <ul  class="layui-nav layui-nav-tree site-demo-nav" lay-filter="side">
+                    <!--VIP企业管理-->
+                        <li class="layui-nav-item">
+                            <a class="javascript:;" href="javascript:;" _href="vip.html">
+                              <cite>VIP企业管理</cite>
+                            </a>
+                     
+                        </li>
+                        <!--普通企业管理-->
+                        <li class="layui-nav-item">
+                            <a class="javascript:;" href="javascript:;" _href="ordinary.html">
+                               <cite>普通企业管理</cite>
+                            </a>
+                        </li>
+                        <!--国际采购管理-->
+                        <li class="layui-nav-item">
+                            <a class="javascript:;" href="javascript:;" _href="procurement.html">
+                                <cite>国际采购管理</cite>
+                            </a>
+                        </li>
+                         <!--国际供应管理-->
+                         <li class="layui-nav-item">
+                            <a class="javascript:;" href="javascript:;" _href="supply.html">
+                                <cite>国际供应管理</cite>
+                            </a>
+                        </li>
+                         <!--国际物流管理-->
+                         <li class="layui-nav-item">
+                            <a class="javascript:;" href="javascript:;" _href="logistics.html">
+                               <cite>国际物流管理</cite>
+                            </a>
+                        </li>
+                        <!--新闻资讯管理-->
+                        <li class="layui-nav-item">
+                            <a class="javascript:;" href="javascript:;">
+                                <cite>新闻资讯管理</cite>
+                            </a>
+                            <dl class="layui-nav-child">
+                                <dd class="">
+                                    <dd class="">
+                                        <a href="javascript:;" _href="news.html">
+                                            <i class="layui-icon"></i><cite>新闻资讯</cite>
+                                        </a>
+                                    </dd>
+                                </dd>
+                                <dd class="">
+                                    <dd class="">
+                                        <a href="javascript:;" _href="assistant.html">
+                                            <i class="layui-icon"></i><cite>外贸助手</cite>
+                                        </a>
+                                    </dd>
+                                </dd>
+                              
+                            </dl>
+                        </li>
+                           <!--关于我们-->
+                           <li class="layui-nav-item">
+                            <a class="javascript:;" href="javascript:;" _href="about.html">                                
+                               <cite>关于我们</cite>
+                            </a>
+                        </li>
+                          <!--首页管理-->
+                          <li class="layui-nav-item">
+                            <a class="javascript:;" href="javascript:;" _href="administration.html">
+                               <cite>首页管理</cite>
+                            </a>
+                        </li>
+                          <!--统计分析-->
+                          <li class="layui-nav-item">
+                            <a class="javascript:;" href="javascript:;" _href="statistics.html">
+                               <cite>统计分析</cite>
+                            </a>
+                        </li>
+     
+                         <li class="layui-nav-item" id="li_system_power">
+                            <a class="javascript:;" href="javascript:;">
+                                <cite>系统权限管理</cite>
+                            </a>
+                            <dl class="layui-nav-child">
+                                <dd class="">
+                                    <dd class="">
+                                        <a href="javascript:;" _href="system.html">
+                                            <i class="layui-icon"></i><cite>管理员维护</cite>
+                                        </a>
+                                    </dd>
+                                </dd>
+                                <dd class="">
+                                    <dd class="">
+                                        <a href="javascript:;" _href="log.html">
+                                            <i class="layui-icon"></i><cite>系统操作日志</cite>
+                                        </a>
+                                    </dd>
+                                </dd>
+                              
+                            </dl>
+                        </li>
+                        
+                        
+                    </ul>
+                </div>
+
+            </div>
+            <div class="layui-tab layui-tab-card site-demo-title x-main" lay-filter="x-tab" lay-allowclose="true">
+                <div class="x-slide_left"></div>
+                <ul class="layui-tab-title">
+                    <li class="layui-this">
+                        VIP数据管理
+                        <i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+                    </li>
+                </ul>
+                <div class="layui-tab-content site-demo site-demo-body">
+                    <div class="layui-tab-item layui-show">
+                        <iframe frameborder="0" src="vip.html" class="x-iframe"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="site-mobile-shade">
+            </div>
+        </div>
+        <script src="./lib/layui/layui.js" charset="utf-8"></script>
+        <script src="./js/x-admin.js"></script>
+        <script src="./js/x-layui.js" charset="utf-8"></script>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              var s = document.getElementsByTagName("script")[0]; 
+              s.parentNode.insertBefore(hm, s);
+            })();
+            
+            layui.use(['form'], function(){                      
+	            form = layui.form();//弹出层	  
+	        })
+            // 修改
+            function updatePwd(title,url,id,w,h) {
+                x_admin_show(title,url,w,h); 
+            }  
+           </script>
+      
+    </body>
+</html>

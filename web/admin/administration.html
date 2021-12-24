@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <title>首页管理</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-C ompatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+        <link rel="stylesheet" href="./css/backstage.css" media="all"> 
+        <script type="text/javascript" src="./js/jquery.js"></script>
+        <script type="text/javascript">
+        	$(function(){
+        		var s=window.location.search.split("=")[1];
+        		if(s==1){
+        			alert("修改失败");
+        		}else if(s==2){
+        			alert("修改成功");
+        		}
+        		
+				$.ajax({
+					url:"../admin/queryHomeInfo",
+					type:"GET",
+					dataType:"json",
+					success:function(result){
+						if(result.message=="success"){
+							$.each(result.obj,function(key,homeInfo){
+								if(homeInfo.contentType==1){ //轮播
+									var str="<form action='../admin/updateHomeInfo' method='post' enctype='multipart/form-data'>";
+									str+="<div class='carousel'>";
+									str+="<div class='describe'>";
+									str+="<p>首页轮播图"+(key+1)+"</p>";
+									str+="<h3>建议图片尺寸</h3>";
+									str+="<h3>1300*420</h3>";
+									str+="<p class='msg'></p>";
+									str+="</div>";
+									str+="<div class='files' style='width:500px;'>";
+									str+="<div class='imgdiv' style='height:150px'><img   src='../"+homeInfo.imageUrl+"'/></div>";
+									str+="<a href='javascript:;' class='but-upload'>";
+									str+="<input type='hiddent' name='id' value='"+homeInfo.id+"'/>";
+									str+="<input type='hiddent' name='contentType' value='"+homeInfo.contentType+"'/>";
+									str+="<input type='hiddent' name='imageUrl' value='"+homeInfo.imageUrl+"'/>";
+									str+="<input type='file' name='fileImg' class='files' onchange='carouselfun(this,"+key+")'>点击这里上传图片";
+									str+="</a>";
+									str+="<input type='submit' value='提 交' class='btn'/>";
+									str+="</div>";
+									str+="</div>";
+									str+="</form>";
+									$("#lb").append(str);
+								}
+								if(homeInfo.contentType==2){ //qq
+									$("#qqid").val(homeInfo.id);
+									$("#qqcontent").val(homeInfo.content);
+									$("#qqcontentType").val(homeInfo.contentType);
+								}
+								if(homeInfo.contentType==3){ //微信
+									$("#wxid").val(homeInfo.id);
+									$("#wxcontent").val(homeInfo.content);
+									$("#wximg").attr("src","../"+homeInfo.imageUrl);
+									$("#wxcontentType").val(homeInfo.contentType);
+									$("#wximageUrl").val(homeInfo.imageUrl);
+								}
+								if(homeInfo.contentType==4){ //What'sup
+									$("#wsid").val(homeInfo.id);
+									$("#wscontent").val(homeInfo.content);
+									$("#wsimg").attr("src","../"+homeInfo.imageUrl);
+									$("#wscontentType").val(homeInfo.contentType);
+									$("#wsimageUrl").val(homeInfo.imageUrl);
+								}
+							});
+						}
+					}
+				});
+				
+        	});
+        	//修改轮播图片
+			function carouselfun(th,num){			
+				var file= th.files[0]
+				if(/image\/\w+/.test(file.type)){
+		               var read=new FileReader()
+		               read.readAsDataURL(file)
+		               read.onload=function(ev){		            	  
+		            	  var img=new Image()
+		                  var data=this.result;  		            	  		            	  
+		                  img.src=data	
+		                  img.onload = function() {
+		            		   if(this.width=="1300"&&this.height=="420"){
+		            			document.getElementsByClassName("imgdiv")[num].innerHTML=""
+		            			img.style.width="500px";
+					            img.style.height="150px";
+					            document.getElementsByClassName("imgdiv")[num].appendChild(img)
+					            document.getElementsByClassName("msg")[num].innerHTML=""
+		            		   }else{
+		            			   document.getElementsByClassName("msg")[num].innerHTML="图片比例不正确"
+		            		   }
+		            	};		            		  		                 	                  
+		               }
+		            }
+		        else{
+		          // alert("请选择图片格式上传")
+		             document.getElementsByClassName("msg")[num].innerHTML="请上传图片格式"
+		        }
+			}
+        	//修改二维码图片
+        	function codefun(th,idname,num){			
+				var file= th.files[0]
+				if(/image\/\w+/.test(file.type)){
+		               var read=new FileReader()
+		               read.readAsDataURL(file)
+		               read.onload=function(ev){		            	  
+		            	  var img=new Image()
+		                  var data=this.result;  		            	  		            	  
+		                  img.src=data	
+		                  img.onload = function() {
+		            		  if(this.width=="128"&&this.height=="128"){            			
+					            document.getElementById(idname).src=data
+					            document.getElementsByClassName("msg")[num].innerHTML=""
+		            		  }else{
+		            			   document.getElementsByClassName("msg")[num].innerHTML="图片比例不正确"
+		            		  }
+		            	};		            		  		                 	                  
+		               }
+		            }
+		        else{
+		           document.getElementsByClassName("msg")[num].innerHTML="请上传图片格式"
+		        }
+			}
+        </script>
+    </head> 
+    <body>
+        <div class="wrap">
+        	<div class="msg-wrap">
+	            <div class="left" id="lb">
+	                <div class="title">
+	                    <a><cite>首页轮播图上传</cite></a>                   
+	                </div>
+	                <!-- 轮播 -->               
+	            </div>
+	            <div class="right">
+	            	<form action="../admin/updateHomeInfo" method="post" enctype="multipart/form-data">
+	                 <div class="service">
+	                    <div class="title">
+	                        <a><cite>即时通讯-QQ</cite></a>                   
+	                      </div>
+	                      <p><label>QQ</label><input type="text" id="qqcontent" name="content"> </p>
+	                      <input type="hidden" id="qqid" name="id">
+	                      <input type="hidden" id="qqcontentType" name="contentType">
+	                      <input type="submit" value="提交" class="btn"/>
+	                 </div>
+	                 </form>
+	                 <form action="../admin/updateHomeInfo" method="post" enctype="multipart/form-data">
+	                 <div class="service">
+	                      <div class="title">
+	                        <a><cite>即时通讯-微信</cite></a>                   
+	                      </div>
+	                      <p><label>微信</label><input type="text" id="wxcontent" name="content"></p>
+	                      <input type="hidden" id="wxid" name="id">
+	                      <input type="hidden" id="wxcontentType" name="contentType">
+	                      <input type="hidden" id="wximageUrl" name="imageUrl">
+	                      <div class="code"> 
+	                            <p class="font">二维码</p>                       
+	                            <div class="files" style="width:128px;">
+	                                <div class="imgdiv"  style="height:128px"><img src="" id="wximg" /></div>
+	                                <a href="javascript:;" class="but-upload">                          
+	                                    <input type="file" name="fileImg" onchange="codefun(this,'wximg',4)">上传图片
+	                                </a>
+	                                <input type="submit" value="提交" class="btn"/>
+	                            </div>
+	                            <div class="font">
+	                                <h3>建议图片尺寸</h3>
+	                                <h3>128*128</h3>
+	                                <p class='msg'></p>
+	                            </div>
+	                      </div>
+	                 </div>
+	                 </form>
+	                 <form action="../admin/updateHomeInfo" method="post" enctype="multipart/form-data">
+	                 <div class="service">
+	                    <div class="title">
+	                        <a><cite>即时通讯-What'sup</cite></a>                   
+	                      </div>
+	                      <p><label>号码</label><input type="text" id="wscontent" name="content"></p>
+	                      <input type="hidden" id="wsid" name="id">
+	                      <input type="hidden" id="wscontentType" name="contentType">
+	                      <input type="hidden" id="wsimageUrl" name="imageUrl">
+	                      <div class="code"> 
+	                            <p class="font">二维码</p>                       
+	                            <div class="files"  style="width:128px">
+	                                <div class="imgdiv"  style="height:128px"><img src="" id="wsimg" /></div>
+	                                <a href="javascript:;" class="but-upload">                          
+	                                    <input type="file" name="fileImg"  onchange="codefun(this,'wsimg',5)">上传图片
+	                                </a>
+	                                <input type="submit" value="提交" class="btn"/>
+	                            </div>
+	                            <div class="font">
+	                                <h3>建议图片尺寸</h3>
+	                                <h3>128*128</h3>
+	                                <p class='msg'></p>
+	                            </div>
+	                      </div>
+	                 </div>
+	                 </form>
+	            </div>
+	        </div>  
+     
+        </div>
+    </body>
+
+</html>

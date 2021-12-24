@@ -1,0 +1,10 @@
+eclipse.preferences.version=1
+encoding//src/com/highcom/admin/controller/AdminInfoController.java=UTF8
+encoding//src/com/highcom/admin/dao/TotalMapper.java=UTF8
+encoding//src/com/highcom/admin/pojo/AdminInfo.java=UTF8
+encoding//src/com/highcom/admin/pojo/Company.java=UTF8
+encoding//src/com/highcom/admin/pojo/Order.java=UTF8
+encoding//src/com/highcom/admin/pojo/Result.java=UTF8
+encoding//src/com/highcom/admin/pojo/TotalInfo.java=UTF8
+encoding//src/com/highcom/admin/service/Impl/TotalServiceImpl.java=UTF8
+encoding//web/admin/css/x-admin.css=UTF-8

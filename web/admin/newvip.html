@@ -1,0 +1,493 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>  VIP企业新增/修改  </title>
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="stylesheet" href="./css/x-admin.css" media="all">
+  <link rel="stylesheet" href="./css/backstage.css" media="all">
+  <script src="./js/jquery.min.js"></script>
+  <link rel="stylesheet" href="../kindeditor/themes/default/default.css" ></link>
+  <link rel="stylesheet" href="../kindeditor/plugins/code/prettify.css" ></link>
+  <script charset="utf-8" src="../kindeditor/kindeditor-all-min.js"></script>
+  <script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
+  <script charset="utf-8" src="../kindeditor/plugins/code/prettify.js"></script>
+  
+  <link rel="stylesheet" href="./js/layui/css/layui.css" media="all">
+  <script src="./js/layui/layui.all.js"></script>
+  <script src="js/eye.js"></script>
+ 
+  <script>
+  
+   $(function(){
+	   layui.use('laydate', function(){
+		 var laydate = layui.laydate;
+		 laydate.render({ elem: '#vipbegin'});
+		 laydate.render({elem: '#vipend'});
+	  }); 
+   });
+  
+   //文本编辑器
+    var editor1;
+   
+   //如果是修改,会有这个企业id存在
+    var comid;
+    var vip;  //变量放在这里的目的是为了处理企业名称不变的情况
+  	$(function(){
+  		 comid=window.location.search.split("=")[1];
+  		 $("#title").html(comid?"VIP企业管理 >> VIP企业 修改":"VIP企业管理 >> VIP企业新增");
+
+  		 //如进行的是修改,要把原来的信息呈现出来
+  		 if(comid){
+				$.ajax({
+					url:"../admin/findVipCompanyById",
+					type:"get",
+					data:{comid:comid},
+					dataType:"json",
+					success:function(data){
+					    vip=data.obj;
+
+					    $("input[name=recommend][value= "+vip.recommend+" ]").attr("checked",true); 
+					    
+						$("#comid").val(vip.comid);
+						$("#comName").val(vip.comName);
+						$("#contacts").val(vip.contacts);
+						$("#telephone").val(vip.telephone);
+						
+						//如果是修改,用户名不可以修改
+						if(comid){
+							$("#userName").val(vip.userName);
+							$("#userName").attr("readonly","readonly" );
+							$("#userName").css("background","silver");
+							$("#userName_msg").html("用户名不可以修改");
+						}
+						
+						$("#password").val(vip.password);
+						$("#vipbegin").val(vip.vipbegin);
+						$("#vipend").val(vip.vipend);
+						$("#management").val(vip.management);
+						$("#recommend").val(vip.recommend);
+						$("#wsimg").attr("src", "../"+vip.mainImage);
+						$("#brief").html(vip.brief);
+						$("#category").val(vip.category);
+			            editor1.html(vip.detailed);
+					}
+				})
+  		    }
+  	});
+  	
+  	
+  	 //点击提交
+	 function subForm(){
+  		 if(validate()==true){
+  				 if(comid){
+  				    updateVip();
+  				 }
+  				 else{
+  				    addVip();
+  				 }
+  		 }				 
+		 //避兔在某些浏览器下,button被做为提交按纽而引起的表单提交
+		 return false;
+	 }
+	 
+ 
+	 //添加
+	 function addVip(){
+		var formData = new FormData($('#vipForm')[0]); 
+        $.ajax({
+           type: "POST",
+           url: "../admin/vipcomsave",  
+           data: formData,
+           processData: false,
+           contentType: false,
+           async:false,
+           success: function (data) {
+          	 	alert(data.message);
+          	 	location.href="vip.html"
+           }
+       }); 
+	 }
+	 
+	 //更新
+	 function updateVip(){
+		 var formData = new FormData($('#vipForm')[0]); 
+	        $.ajax({
+	           type: "POST",
+	           url: "../admin/updateVipCompany", 
+	           data: formData,
+	           processData: false,
+	           contentType: false,
+	           async:false,
+	           success: function (data) {
+	           		alert(data.message);
+	           		location.href="vip.html"
+	           }
+	      });
+	 }
+	 
+	 
+	 //输入校验
+	 function validate(){ 
+		   $(".msg").html("");
+		   var errorIdList=new Array();
+		   
+		    var result=true;
+			var comName = $("#comName").val();
+			var telephone = $("#telephone").val();
+			var userName = $("#userName").val();
+			var password = $("#password").val();
+			var vipbegin = $("#vipbegin").val();
+			var contacts=$("#contacts").val();
+			var vipend=$("#vipend").val();
+			var telephone=$("#telephone").val();
+			var management=$("#management").val();
+			var detailed=editor1.html();   //此处不要取$("#detailed").val(),会有bug
+			var brief=$("#brief").val();
+			
+			var recommend=vipForm.recommend.value;
+			$(".msg").text("")
+	
+			//企业简介,详细信息等其他信息暂时不做验证			
+			var errmsg="";
+			if(comName==""){
+				result=false;
+				errorIdList.push("comName");
+				$("#comName_msg").text("企业名称不能为空");
+			}else{
+				//验证全业名称的唯一性
+				 $.ajax({
+		           type: "get",
+		           url: "../admin/findVipCompanyByName", 
+		           data:{comName:comName},
+		           dataType:"json",
+		           async:false,
+		           success: function (data) {
+		           		if(data.status=="-1"){
+		           			//如果是修改
+		           			if(comid){
+		           				if(data.obj.comName!=vip.comName){
+		           					result=false;
+		           					errorIdList.push("comName");
+				    				$("#comName_msg").text("已经存在相同的企业名称")
+		           				}
+		           			}
+		           			
+		           			//如果是添加
+		           			else{
+		           				result=false;
+		           				errorIdList.push("comName");
+			    				$("#comName_msg").text("已经存在相同的企业名称")
+		           			}
+		           		}	
+		           		
+		           }
+			     });
+			}	
+			
+
+			if(contacts==""){
+				result=false;
+				errorIdList.push("contacts");
+				$("#contacts_msg").text("联系人不能为空")
+			}
+			
+			if(telephone==""){
+				result=false;
+				errorIdList.push("telephone");
+				$("#telephone_msg").text("联系方式不能为空")
+			}
+			else{
+				//验证手机号
+				var reg = /^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8,6]|8[0-9]|9[1,8,9])\d{8}$/;
+				if(reg.test(telephone)==false){
+					result=false;
+					errorIdList.push("telephone");
+					$("#telephone_msg").text("联系方式格式不正确");
+				}
+			}
+			
+			
+			//这里没有必要校验用户名的长度和内容,所以只做了不能为空和不能重复校验
+			if(userName==""){
+				result=false;
+				errorIdList.push("userName");
+				$("#userName_msg").text("用户名不能为空")
+			
+			}
+			else{
+				
+				//如果是添加,要验证用户名不能重复
+				//如果是修改,不让修改用户名
+				 $.ajax({
+			           type: "get",
+			           url: "../admin/findVipCompanyByUserName", 
+			           data:{userName:userName},
+			           dataType:"json",
+			           async:false,
+			           success: function (data) {
+			           		if(data.status=="-1"){
+			           			//如果是添加
+			           			if(!comid){
+			           				result=false;
+			           				errorIdList.push("userName");
+					    			$("#userName_msg").text("此用户名已被其他企业使用")
+			           			}
+			           		}	
+			           }
+				  });
+			}
+			
+			if(password==""){
+				result=false;
+				errorIdList.push("password");
+				$("#password_msg").text("登录密码不能为空")
+			}
+
+			else {			
+				var reg=/^[0-9A-Za-z]{6,20}$/;
+				if(reg.test(password)==false){
+					result=false;
+					errorIdList.push("password");
+					$("#password_msg").text("登录密码格式不正确")
+				}	
+			}
+			if(vipbegin==""){
+				result=false;
+				errorIdList.push("vipbegin");
+				$("#vipbegin_msg").text("vip开始时间不能为空");
+			}
+			
+			if(vipend==""){
+				result=false;
+				errorIdList.push("vipend");
+				$("#vipend_msg").text("vip结束时间不能为空");
+			}
+			
+			if(vipend<vipbegin){
+				result=false;
+				$("#vipend_msg").text("vip 到期时间不能早于开始始间")
+			}
+			
+			if(management==""){
+				result=false;
+				errorIdList.push("management");
+				$("#management_msg").text("主营项目不能为空");
+			}
+			
+			if(brief==""){
+				result=false;
+				errorIdList.push("brief");
+				$("#brief_msg").text("企业简介不能为空");
+			}
+			
+			if(detailed==""){
+				result=false;
+				errorIdList.push("detailed");
+				$("#detailed_msg").text("详细介绍不能为空");
+			}
+			
+
+			//如果是首页推荐,则必须传图片
+			if(recommend==1){
+				var imgurl= $("#wsimg").attr("src");
+		
+				if(imgurl!=undefined){
+		
+					if( imgurl ==""  ||imgurl=="null"|| imgurl.indexOf("null")!=-1 ){
+						result=false;
+						document.getElementById("imgmsg").innerHTML="选择了首页推荐，必须上传图片"
+					}
+				}
+			}
+			
+			if(result==true){
+				result=confirm("确定提交吗");
+			}
+			
+			else{
+				alert("内容输入有误,请按提示修正后再提交!");
+				$("#"+errorIdList[0]).focus();
+			}
+		
+			return result;
+	 }
+	//上传图片显示
+		function filefun(th){			
+			var file= th.files[0]
+			if(/image\/\w+/.test(file.type)){
+	             var read=new FileReader()
+	             read.readAsDataURL(file)
+	             read.onload=function(ev){		            	  
+	          	  var img=new Image()
+	                var data=this.result;  		            	  		            	  
+	                img.src=data	
+	                img.onload = function() {
+	          		   if(this.width=="260"&&this.height=="160"){
+	          			document.getElementsByClassName("imgdiv")[0].innerHTML=""
+	          			img.style.width="260px";
+				            img.style.height="160px";
+				            document.getElementsByClassName("imgdiv")[0].appendChild(img)
+				            document.getElementById("imgmsg").innerHTML=""
+	          		   }else{
+	          			 document.getElementById("imgmsg").innerHTML="图片比例不正确"
+	          		   }
+	          	};		            		  		                 	                  
+	             }
+	          }
+	      else{
+	    	  document.getElementById("imgmsg").innerHTML="请上传图片格式"
+	      }
+		}
+  </script>
+</head>
+
+<body>
+ <div class="wrap">
+  <div class="x-nav">
+    <div class="title">
+      <a id="title"><cite>这里的标题将动态改变</cite></a>
+      <a href="vip.html" class="back">返回上页</a>
+    </div>
+  </div>
+
+  <div class="x-body">
+    <form class="fom" id="vipForm" name="vipForm">
+        <table class="infotable" cellspacing="0" cellpadding="0" border="0" >
+          <tr>        
+            <td> <label> 企业全称： </label></td>
+            <td colspan="3">
+               <input type="hidden"  id="comid" name="comid" >
+               <input type="text"  name="comName" id="comName" class=vip_comname>
+               <span class="msg" id="comName_msg">*</span>
+            </td>
+           
+          </tr>         
+          <tr>
+            <td width="15%"><label >联 系 人： </label></td>
+            <td width="35%"><input  type="text"  name="contacts"  id="contacts" ><span class="msg"  id="contacts_msg">*</span></td>
+            <td width="15%"><label>	联系方式： </label></td>
+            <td width="35%"><input type="text"  name="telephone"  id="telephone"  ><span class="msg" id="telephone_msg">*</span></td>
+          </tr>
+          <tr>
+            <td><label>	用 户 名： </label> </td>
+            <td><input  type="text"  name="userName"   id="userName" ><span class="msg" id="userName_msg">*</span></td>
+            <td> <label for="password">登录密码：</label></td>
+            <td >   
+  
+                <!-- 这个div有样式控制,名字必须为div_pwd -->
+             	<div id="div_pwd"  >
+               	  <input type="password"  name="password"  id="password"   > 
+               	  <img onclick="togglePwd('password',this)" src="images/1.png"  >
+                </div>
+               
+                <span class="eye_msg" id="password_msg">* 6-20位字母或数字</span>
+            </td>
+          </tr>
+          <tr>
+            <td><label>  VIP开始时间：</label></td>
+            <td><input   name="vipbegin"   id="vipbegin" > <span class="msg" id="vipbegin_msg">*</span></td>
+            <td><label for="vipend">  VIP到期时间：  </label> </td>
+            <td><input   name="vipend"   id="vipend">  <span class="msg" id="vipend_msg">*</span></td>
+          </tr>
+          <tr>
+            <td><label> 主营项目： </label></td> 
+            <td colspan="3">
+            	<input  type="text" name="management"   id="management" class="vip_comname">
+            	<span class="msg" id="management_msg">*</span>
+            </td>  
+                  
+          </tr>
+          <tr>
+             <td><label for="recommend">首页推荐： </label></td>
+             <td colspan="3">
+             	<div class="sel lableft">
+             		<input type="radio" value="1"  name="recommend" id="recommend1" checked="checked"> <label>推荐</label>   
+                	<input type="radio" value="0"  name="recommend" id="recommend2"><label>不推荐</label>
+                </div>
+                <div><span>(注：默认即推荐到首页展示)</span></div>
+             </td> 
+          </tr>
+          <tr>
+            <td> <label for="category">企业类别： </label></td>
+            <td colspan="3"><select name="category" id="category">
+                  <option value="1">中国入驻企业</option>
+                  <option value="2">俄罗斯入驻企业</option>
+                  <option value="3">事业合作企业</option>
+                </select>          
+            </td>
+          </tr>
+          <tr>
+            <td><label for="files">企业主图：</label>
+             <td colspan="3">
+				   <div class="lableft">
+						<div class="files" >
+							<div class="imgdiv" ><img src="" id="wsimg" width="260" height="160" /></div>
+							<a href="javascript:;" class="but-upload">                          
+								<input type="file" name="files"  onchange="filefun(this)">上传图片
+							</a>					
+						</div>
+					</div>
+					 <div>
+						<p >建议图片尺寸260*160</p>
+						<p class="msg" id="imgmsg"></p>
+					</div>
+			</td>	
+          </tr>
+          <tr>
+            <td><label for="brief">企业简介：</label></td>
+            <td colspan="3">
+              <span class="msg" id="brief_msg" style="display:block"></span>
+              <textarea name="brief"  class="inp" style=" height:100px"  id="brief"></textarea> 
+            </td>
+             <td>
+
+			</td>        
+          </tr>
+          <tr>
+            <td><label for="L_content" > 详细介绍：</label></td>
+            <td colspan="3"> 
+              <span class="msg" id="detailed_msg"></span>
+              <textarea id="detailed"  name="detailed" class="content"></textarea></td>
+    		  <td>
+				
+			</td>  
+          </tr>
+
+          <tr>
+            <td></td>
+            <td>
+                <input type="button"  class="btn"  id="btnSubmit" value="提交"  onclick="return subForm()" >
+            </td>
+          </tr>
+        </table>
+    </form>
+  </div>
+</div>
+	<script type="text/javascript">	
+	    KindEditor.ready(function(K) {
+	            editor1 = K.create('textarea[id="detailed"]', {
+	            cssPath : '../kindeditor/plugins/code/prettify.css',
+	            height:'400px',
+	            width:'750px',
+	            uploadJson :'../admin/uploadimg',
+	            allowFileManager : false,
+	            allowImageRemote: false,
+	            afterBlur: function () {  //解决js无法提交的bug
+	                this.sync();
+	            }
+	        });
+	        prettyPrint();
+	    });  
+	</script>   
+</body>
+
+     
+
+</html>

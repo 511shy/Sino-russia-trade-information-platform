@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>修改管理员帐号</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+        <link rel="stylesheet" href="./css/backstage.css" media="all"> 
+        
+        <script src="./js/jquery.min.js"></script>
+        <script>
+
+	        
+	        /*根据传过来的id 取得管理员信息并回显*/
+	    	$(function(){
+	    		   var id=window.location.search.split("=")[1];
+	    			$.ajax({
+	    				url:"../admin/searchAdmin",
+	    				type:"get",
+	    				data:{id:id},
+	    				dataType:"json",
+	    				success:function(data){
+	    					var admin=data.obj;
+	    					
+	    					$("#realName").val(admin.realName);
+	    					$("#adminName").val(admin.adminName);
+	    					$("#password").val(admin.password);
+	    					$("#confirm").val(admin.password);
+	    				    $("input[name=role][value= "+admin.role+" ]").attr("checked",true);
+	    					$("#phone").val(admin.phone);
+	    					$("#id").val(admin.id);
+	    				}
+	    				
+	    			})
+				
+	    	});
+
+	    	 function validate(){
+		        	$(".msg").html("");
+		        	var result=true;
+					var password  = $("#password").val();
+					var realName= $("#realName").val();		
+					var confirm= $("#confirm").val();		
+					var phone=$("#phone").val();
+					
+					//var errorStr="";
+					//验证手机号
+					var reg1 = /^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8,6]|8[0-9]|9[1,8,9])\d{8}$/;
+					//验证密码
+					var reg2=/^[0-9A-Za-z]{6,20}$/;
+					
+					
+					if(realName==""){
+						result=false;
+						$("#realName_msg").text("真实姓名不能为空")
+					}
+					
+					if(phone.length!=11 || reg1.test(phone)==false){
+						result=false;
+	    				$("#phone_msg").text("请正确填写手机号")
+	    			}
+					//验证密码
+					if(password==""){
+						result=false;
+						$("#password_msg").text("密码不能为空")
+					}
+					if(reg2.test(password)==false){
+						result=false;
+						$("#password_msg").text("格式不正确,应为6-20位字母或数字")
+					}
+				    if(password!=confirm){
+				    	result=false;
+						$("#confirm_msg").text("两次输入的密码不一致")
+					}
+					
+				    return result;
+		        }
+      
+
+	         function updateAdmin(){
+	        	 if(validate()==false)
+	        		 return;
+	        	 
+	        	 if(confirm("确定提交吗")==true){
+	        		 $.ajax({
+	 	    			url:"../admin/updateAdmin",
+	 	    			type:"post",
+	 	    		
+	 	    			data:{
+	 	    				adminName:$("#adminName").val(),
+	 	    				password:$("#password").val(),
+	 	    				role:$("input[name='role']:checked").val(),
+	 	    				phone:$("#phone").val(),
+	 	    				realName:$("#realName").val(),
+	 	    				id:$("#id").val()
+	 	    			},
+	 	    			
+	 	    			dataType:"json",
+	 	    			success:function(data){
+	 	    				alert(data.message);
+	 	    				window.location.href="system.html";
+	 	    			}
+	 	    			
+	 	    		});
+	        	 }
+	    	}
+        </script>
+        
+
+    </head>
+    
+    <body>
+    <div class="wrap">
+        <div class="x-nav">
+            <div class="title">
+              <a><cite>系统设置 >>修改管理员帐号</cite></a>                
+              <a  class="back" href="system.html">返回上页</a>
+              </div>         
+        </div>
+        <div class="x-body">
+          <form action="" class="fom">
+          	<div class="adduser clearfix">
+                  <div class="adminimg"> <img src="images/admin.png" ></div>
+                   <div class="inputright">
+                       <h2>修改管理员账号</h2>
+                       <p>
+                        <label>管理员账号</label>
+                        <input id="id" type="hidden" >
+                        <input id="adminName"  readonly class="lg"><span class="msg" id="adminName_msg">* 账号不可修改</span>
+                       </p>
+                      <p>
+                        <label>管理员真实姓名</label>
+                        <input id="realName" class="lg"> 
+                         <span class="msg" id="realName_msg">*</span>
+                      </p>                     
+                      <p>
+                        <label>管理员角色</label>
+                        <input type="radio"  name="role" value="普通管理员" checked >普通管理员    
+                        <input type="radio"  name="role"  value="超级管理员"> 超级管理员
+                        <span class="msg">*</span>
+                      </p>                                           
+                     <p>
+                        <label>联系方式</label>
+                        <input id="phone" class="lg">  <span class="msg" id="phone_msg">*</span>
+                     </p>
+                     <p>
+                        <label>登录密码</label>
+                        <input id="password" type="password" class="lg"> 
+                        <span class="msg"  id="password_msg">* 6-20位字母或数字</span>
+                     </p>                     
+                      <p>
+                        <label>确认密码</label>
+                        <input id="confirm"  type="password" class="lg"> 
+                        <span class="msg" id="confirm_msg">*</span>
+                      </p>                      
+                       <p>
+                        <input id="btnAdd" type="button" value="提交" class="btn" onclick="updateAdmin()">
+                       </p>
+                   </div>
+			</div>            
+          </form>             
+    	</div>
+    </div>
+    </body>
+
+</html>

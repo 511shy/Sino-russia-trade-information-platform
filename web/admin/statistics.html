@@ -1,0 +1,789 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>数据统计分析</title>
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+        <link rel="stylesheet" href="./css/backstage.css" media="all">        
+        <script src="./js/jquery.min.js"></script>
+		<script src="./js/echarts.js"></script>		
+		<script>
+			$(function(){
+				//用系统库内年度初始化两个下拉框
+				initSelectBox();
+				var year=new Date().getFullYear();
+				
+				//订单数据分析(五项)
+				totalOrder();
+				
+				//订单数据统计(按年),两个条形图
+				totalOrderByDate(year);
+				
+			    //注册企业数据分析 三个方块和饼图
+				totalCompany();
+			    
+			    //饼图前面的方图
+				totalCompanyByDate(year);
+			    
+				 //订单访问量数据分析 三个方块
+				totalOrderClick();
+				 
+				//订单访问量前12排行
+				getTopClick();
+
+			});
+			
+			//用年度初始化两个下拉框
+			function initSelectBox(){
+				$.ajax({
+					url : "../total/getYears",
+					type : "get",
+					success : function(data) {
+						var orderYears=data.obj[0];
+						var companyYears=data.obj[1];
+					
+						//初始化订单年度下拉框
+						for(var i=0;i<orderYears.length;i++){
+							$("#select_order").append("<option value='"+orderYears[i]+"'>"+orderYears[i]+"年</option>");
+						}
+						
+						//企业年度下拉框
+						for(var i=0;i<companyYears.length;i++){
+							$("#select_company").append("<option value='"+companyYears[i]+"'>"+companyYears[i]+"年</option>");
+						}	
+					}
+				});
+			}
+			
+			 //订单数据分析(五项)
+			function totalOrder(){
+				$.ajax({
+					url : "../total/totalOrder",
+					type : "get",
+					success : function(data) {
+						var map = data.obj;
+						var i = 1;
+						for ( var key in map) {
+							var header = key.split("_")[0];
+							var buttom = key.split("_")[1];
+							var value = map[key];
+
+							$("#div" + i + "_span1").html(header);
+							$("#div" + i + "_span2").html(value);
+							$("#div" + i + "_span3").html(buttom);
+							++i;
+						}
+					}
+				});
+			}
+
+			 //订单数据统计 两个方图
+			function totalOrderByDate(year){
+				$.ajax({
+					url : "../total/totalOrderByDate",
+					type : "get",
+					data:{year:year},
+					success:function(data){  // Result <List<List<TotalInfo>>>  list里装了4个list
+						var containerList=data.obj;
+						var list1=containerList[0];
+						var list2=containerList[1];
+						var list3=containerList[2];
+						var list4=containerList[3];
+						
+						//横轴,月份
+						var array1 = new Array();
+
+						//纵轴,订单量
+						var array2 = new Array();
+
+						for (var i = 0; i < list1.length; i++) {
+							array1.push(list1[i].month+"月");
+							array2.push(list1[i].value);
+						}
+
+						//横轴,月份
+						var array3 = new Array();
+
+						//纵轴,订单量
+						var array4 = new Array();
+
+						for (var i = 0; i < list2.length; i++) {
+							array3.push(list2[i].month+"月");
+							array4.push(list2[i].value);
+						}
+						
+						//------------------------另一组 -----------------------
+						//横轴,月份
+						var a1 = new Array();
+
+						//纵轴,订单量
+						var a2 = new Array();
+
+						for (var i = 0; i < list3.length; i++) {
+							a1.push(list3[i].month+"月");
+							a2.push(list3[i].value);
+						}
+
+						//横轴,月份
+						var a3 = new Array();
+
+						//纵轴,订单量
+						var a4 = new Array();
+
+						for (var i = 0; i < list4.length; i++) {
+							a3.push(list4[i].month+"月");
+							a4.push(list4[i].value);
+						}
+
+						
+						var myChart1 = echarts.init(document.getElementById('div_order_month1'));
+						var myChart2 = echarts.init(document.getElementById('div_order_month2'));
+
+						// 指定图表的配置项和数据
+						var option1 = {	
+							 backgroundColor: '#F9F9F9',
+							 color : [ '#4472C4','#ED7D31'],
+							 title: [{
+							        text: "采购订单",
+							        left:'147',
+							        top:'15',
+							        textStyle: {
+							          fontSize: '16',
+							          color:'#A30014',
+							        //  padding: [120,20,20,30]
+									
+							        },
+							       
+							        
+							    },{
+							        text: "已完成/未完成 成数据分析",
+							        top:'15',
+							        left:'223',
+							        textStyle: {
+							          fontSize: 16
+							        }
+							    }],   
+
+							tooltip : {},
+							legend : {
+								data : [ '已完成','未完成' ],
+								top:"93%"
+							},
+							xAxis : {
+								//	type:"category",
+								data : array1,
+
+								splitLine : {
+									show : true,
+									lineStyle : {
+										color : [ '#D9D9D9' ],
+										width : 1,
+										type : 'solid'
+									}
+								}
+
+							},
+							yAxis : {
+								//type:'value',
+								//网格样式
+								splitLine : {
+									show : true,
+									lineStyle : {
+										color : [ '#D9D9D9' ],
+										width : 1,
+										type : 'solid'
+									}
+								}
+							},
+							series : [ {
+								label : {
+									show : true,//是否显示数值
+									//  rotate:60,//数值是否旋转
+									position : 'top'//设置显示数值位置 top：顶部 bottom：底部
+								},
+
+								name : '已完成',
+								type : 'bar',
+								data : array2
+							},
+							{
+								label : {
+									show : true,//是否显示数值
+									//  rotate:60,//数值是否旋转
+									position : 'top'//设置显示数值位置 top：顶部 bottom：底部
+								},
+								name : '未完成',
+								type : 'bar',
+								data : array4
+							}]
+						};
+						
+						// 指定图表的配置项和数据
+						var option2 = {
+							color : [ '#4472C4','#ED7D31'],
+							backgroundColor: '#F9F9F9',
+							 title: [{
+							        text: "供应订单",
+							        left:'147',
+							        top:'15',
+							        textStyle: {
+							          fontSize: 16,
+							          color:'#A30014',
+							        },
+							        
+							    },{
+							        text: "已完成/未完成 成数据分析",
+							        left:'223',
+							        top:'15',
+							        textStyle: {
+							          fontSize: 16
+							        }
+							    }],   
+							    
+
+							tooltip : {},
+							legend : {
+								data : [ '已完成','未完成' ],
+								top:"93%"
+							},
+							xAxis : {
+								data : a1,
+								splitLine : {
+									show : true,
+									lineStyle : {
+										color : [ '#D9D9D9' ],
+										width : 1,
+										type : 'solid'
+									}
+								}
+
+							},
+							yAxis : {
+								//type:'value',
+								//网格样式
+								splitLine : {
+									show : true,
+									lineStyle : {
+										color : [ '#D9D9D9' ],
+										width : 1,
+										type : 'solid'
+									}
+								}
+							},
+							series : [ {
+								label : {
+									show : true,//是否显示数值
+									//  rotate:60,//数值是否旋转
+									position : 'top'//设置显示数值位置 top：顶部 bottom：底部
+								},
+
+								name : '已完成',
+								type : 'bar',
+								data : a2
+							},
+							{
+								label : {
+									show : true,//是否显示数值
+									//  rotate:60,//数值是否旋转
+									position : 'top'//设置显示数值位置 top：顶部 bottom：底部
+								},
+								name : '未完成',
+								type : 'bar',
+								data : a4
+							}]
+						};
+						
+
+						// 使用刚指定的配置项和数据显示图表。
+						myChart1.setOption(option1);
+						myChart2.setOption(option2);
+					}
+				});
+			}
+			 
+			 //订单访问量的三个方块
+			function totalOrderClick(){
+				$.ajax({
+					url : "../total/totalOrderClick",
+					type : "get",
+					success : function(data) {
+						var map = data.obj;
+						var i = 1;
+						for ( var key in map) {
+							var header = key.split("_")[0];
+							var buttom = key.split("_")[1];
+							var value = map[key];
+
+							$("#orderclick_div" + i + "_span1").html(header);
+							$("#orderclick_div" + i + "_span2").html(value);
+							$("#orderclick_div" + i + "_span3").html(buttom);
+							++i;
+						}
+					}
+				});
+			}
+			
+			//企业数据分析,三个方块和饼图
+			function totalCompany(){
+				$.ajax({
+					url : "../total/totalCompany",
+					type : "get",
+					success : function(data) {
+						var map = data.obj;
+						var i = 1;
+						for ( var key in map) {	
+							var header = key.split("_")[0];
+							var buttom = key.split("_")[1];
+							var value = map[key];
+
+							$("#comp_div" + i + "_span1").html(header);
+							$("#comp_div" + i + "_span2").html(value);
+							$("#comp_div" + i + "_span3").html(buttom);
+							
+							++i;
+						}
+				
+						//画出饼图
+						var myChart = echarts.init(document.getElementById('div_percentage'));
+						
+						var k1=Object.keys(map)[1];  //vip企业
+						var title1=k1.split("_")[0];
+						var value1=map[k1];
+						
+						var k2=Object.keys(map)[2];  //普通企业
+						var title2=k2.split("_")[0];
+						var value2=map[k2];
+
+						var option = {
+						    color:[ '#ED7D31','#4472C4'], 
+						 
+						    legend: {  
+				            	top:"80%",  //调整图标的位置
+						    	data : [title1, title2 ]
+						    },
+						    
+				
+
+							 title: [{
+							        text: "注册企业",
+							        left:'147',
+							        top:'15',
+							        textStyle: {
+							          fontSize: 16,
+							          color:'#A30014',
+							        },
+							        
+							    },{
+							        text: "VIP企业/普通企业 数分析",
+							        top:'15',
+							        left:'223',
+							        textStyle: {
+							          fontSize: 16
+							        }
+							    }],   
+							
+						    series : [
+						        {
+						            name: '访问来源',
+						            type: 'pie',
+						            radius: '55%',
+		  
+						            data:[
+						                {value:value1, name:title1},
+						                {value:value2, name:title2},
+						            ],
+						         
+						            itemStyle: {
+						                normal: {
+						                    shadowBlur: 200,
+						                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+						                }
+						            }
+						        	,
+						           label: {
+						                normal: {
+						                    show: true,
+						                    position:'inner', //标签的位置
+						                    formatter: '{b}: {d}%' //自定义显示格式(b:name, c:value, d:百分比)  //{b}: {c}({d}%)
+						                }
+						            }
+							     }
+						    ]
+						};
+			
+						myChart.setOption(option);
+					}
+				});
+			}
+			
+			//饼图前面的方图
+			function totalCompanyByDate(year){
+				$.ajax({
+					url : "../total/totalCompanyByDate",
+					type : "get",
+					data:{year:year},
+					success:function(data){
+						//画出方图
+						var myChart = echarts.init(document.getElementById('div_percentage_rect'));
+					
+						var list1=data.obj[0];
+						var list2=data.obj[1];
+					
+						//横轴,月份
+						var array1 = new Array();
+
+						//纵轴,企业数量
+						var array2 = new Array();
+
+						for (var i = 0; i < list1.length; i++) {
+							array1.push(list1[i].month+"月");
+							array2.push(list1[i].value);
+						}
+
+						//横轴,月份
+						var array3 = new Array();
+
+						//纵轴,订单量
+						var array4 = new Array();
+
+						for (var i = 0; i < list2.length; i++) {
+							array3.push(list2[i].month+"月");
+							array4.push(list2[i].value);
+						}
+						
+						// 指定图表的配置项和数据
+						var option = {
+							color : [ '#ED7D31','#4472C4'],
+							backgroundColor: '#F9F9F9',
+							 title: [{
+							        text: "注册企业",
+							        left:'147',
+							        top:'15',
+							        textStyle: {
+							          fontSize: 16,
+							          color:'#A30014',
+							        },
+							        
+							    },{
+							        text: "VIP企业/普通企业 数据分析",
+							        left:'223',
+							        top:'15',
+							        textStyle: {
+							          fontSize: 16
+							        }
+							    }],   
+							    
+							    
+							tooltip : {},
+							legend : {
+								data : [ 'vip企业','普通企业' ],
+								top:"93%" 
+							},
+							xAxis : {
+								//	type:"category",
+								data : array1,
+
+								splitLine : {
+									show : true,
+									lineStyle : {
+										color : [ '#D9D9D9' ],
+										width : 1,
+										type : 'solid'
+									}
+								}
+
+							},
+							yAxis : {
+								//type:'value',
+								//网格样式
+								splitLine : {
+									show : true,
+									lineStyle : {
+										color : [ '#D9D9D9' ],
+										width : 1,
+										type : 'solid'
+									}
+								}
+							},
+							series : [ {
+								label : {
+									show : true,//是否显示数值
+									//  rotate:60,//数值是否旋转
+									position : 'top'//设置显示数值位置 top：顶部 bottom：底部
+								},
+
+								name : 'vip企业',
+								type : 'bar',
+								data : array2
+							},
+							{
+								label : {
+									show : true,//是否显示数值
+									//  rotate:60,//数值是否旋转
+									position : 'top'//设置显示数值位置 top：顶部 bottom：底部
+								},
+								name : '普通企业',
+								type : 'bar',
+								data : array4
+							}]
+						};
+						
+						myChart.setOption(option);
+					}
+
+				});
+			}
+			
+			//订单访问量前30
+			function getTopClick(){
+				$.ajax({
+					url : "../total/getTopClick",
+					type : "get",
+					data : {
+						n : 30
+					},
+					success : function(data) {
+						// Result <List<List<Order>>>
+						var list1 = data.obj[0]; //相当于  <List<Order>
+						var list2 = data.obj[1];
+
+						//横轴,名称
+						var array1 = new Array();
+
+						//纵轴,访问量
+						var array2 = new Array();
+
+						for (var i = 0; i < list1.length; i++) {
+							array1.push(list1[i].orderNamech);
+							array2.push(list1[i].clickcount);
+						}
+
+						//横轴,名称
+						var array3 = new Array();
+
+						//纵轴,访问量
+						var array4 = new Array();
+
+						for (var i = 0; i < list2.length; i++) {
+							array3.push(list2[i].orderNamech);
+							array4.push(list2[i].clickcount);
+						}
+
+						var myChart1 = echarts.init(document.getElementById('caigou_div_top12'));
+						var myChart2 = echarts.init(document.getElementById('gongying_div_top12'));
+
+						initTopClickChart(myChart1,array1,array2,"采购订单访问量","#ED7D31");
+						initTopClickChart(myChart2,array3,array4,"供应订单访问量","#4472C4");
+					}
+				});
+			}
+			
+			
+			function initTopClickChart(myChart,array1,array2,title,color){
+				// 指定图表的配置项和数据
+				var option = {
+					color : [color ], 
+				    backgroundColor: '#F9F9F9',
+
+					 title: [{
+					        text: title,
+					        left:'470',
+					        top:'15',
+					        textStyle: {
+					          fontSize: 16,
+					          color:'#A30014',
+					        },
+					        
+					    },{
+					        text: "数据排行",
+					        left:'590',
+					        top:'15',
+					        textStyle: {
+					          fontSize: 16
+					        }
+					    }],   
+						
+					tooltip : {},
+
+					xAxis : {
+					//	type:"category",
+						data : array1,
+						splitLine : {
+							show : true,
+							lineStyle : {
+								color : [ '#D9D9D9' ],
+								width : 1,
+								type : 'solid'
+							}
+						}
+					},
+					yAxis : {
+						//type:'value',
+						//网格样式
+						splitLine : {
+							show : true,
+							lineStyle : {
+								color : [ '#D9D9D9' ],
+								width : 1,
+								type : 'solid'
+							}
+						}
+					},
+					series : [ {
+						label : {
+							show : true,//是否显示数值
+					    //  rotate:60,//数值是否旋转
+							position : 'top'//设置显示数值位置 top：顶部 bottom：底部
+						},
+
+						name : title.substring(0,4),
+						type : 'bar',
+						data : array2
+					},
+
+				 ]
+				};
+
+				// 使用刚指定的配置项和数据显示图表。
+				myChart.setOption(option);
+			}
+			
+			
+		 </script>
+
+  </head>
+  <body>
+  	<div class="wrap">
+  	    <div class="x-nav" >
+            <div class="title">
+              <a><cite>数据统计分析</cite></a>           
+            </div>          
+        </div>
+        <div class="x-body">
+            <div class="content">
+                <div class="bodytitle">
+                    <h2>订单访问量数据分析</h2>
+                    <i></i>
+                </div>
+                <ul class="ul1 clearfix">
+                    <li>
+                         <h3 id="orderclick_div1_span1"></h3>
+                         <strong id="orderclick_div1_span2" ></strong> 
+                         <span id="orderclick_div1_span3"></span>
+                    </li>
+                    <li>
+                       <h3 id="orderclick_div2_span1"></h3>
+                         <strong id="orderclick_div2_span2" ></strong> 
+                         <span id="orderclick_div2_span3"></span>
+
+                    </li>
+                    <li>
+                        <h3 id="orderclick_div3_span1"></h3>
+                         <strong id="orderclick_div3_span2" ></strong> 
+                         <span id="orderclick_div3_span3"></span>
+                    </li>
+
+                </ul> 
+                <br /><br />
+                <div class="bodytitle">
+                    <h2>订单数据分析</h2>
+                    <i></i>
+                </div>
+                <ul class="ul1 clearfix list">
+                    <li>
+                         <h3 id="div1_span1"> </h3>
+                         <strong id="div1_span2"> </strong> 
+                         <span id="div1_span3"> </span>
+                    </li>
+                    <li>
+                         <h3 id="div2_span1"> </h3>
+                         <strong id="div2_span2"> </strong> 
+                         <span id="div2_span3"> </span>
+                    </li>
+                    <li>
+                         <h3 id="div3_span1"> </h3>
+                         <strong id="div3_span2"> </strong> 
+                         <span id="div3_span3"> </span>
+                    </li>
+                    <li>
+                         <h3 id="div4_span1"> </h3>
+                         <strong id="div4_span2"></strong> 
+                         <span id="div4_span3"> </span>
+                    </li>
+                    <li>
+                         <h3 id="div5_span1"> </h3>
+                         <strong id="div5_span2"> </strong> 
+                         <span id="div5_span3"> </span>
+                    </li>
+                </ul>                          
+                <div class="monthly">
+                       <p><label for="sel">订单数据统计</label>
+                       <select id="select_order" onchange="totalOrderByDate(this.value)"></select><p>
+                    <div class="img1">
+                            <div id="div_order_month1" style="width: 542px; height: 400px; display:inline-block"></div>
+							<div id="div_order_month2" style="width: 542px; height: 400px; display:inline-block"></div>  
+                    </div>
+                </div>   
+                <div class="bodytitle">
+                    <h2>注册企业数据分析</h2>
+                    <i></i>
+                </div>
+                <ul class="ul1 clearfix">
+                    <li>
+                         <h3 id="comp_div1_span1"></h3>
+                         <strong id="comp_div1_span2"></strong> 
+                         <span id="comp_div1_span3"></span>
+                    </li>
+                    <li>
+                          <h3 id="comp_div2_span1"></h3>
+                         <strong id="comp_div2_span2"></strong> 
+                         <span id="comp_div2_span3"></span>
+                    </li>
+                    <li>
+                          <h3 id="comp_div3_span1"></h3>
+                         <strong id="comp_div3_span2"></strong> 
+                         <span id="comp_div3_span3"></span>
+                    </li>
+                    
+                </ul>               
+                <div class="monthly">
+                    <form action="">
+                        <p><label for="sel">注册企业数据统计</label>
+						<select id="select_company"  onchange="totalCompanyByDate(this.value)"> </select></p>
+                    </form>
+                    <div class="img1">                              
+					    <!-- 方图 -->
+						<div id="div_percentage_rect" style="width:628px; height: 400px; display:inline-block" ></div>
+						<!-- 饼图 -->
+						<div id="div_percentage" style="width:450px; height: 400px; display:inline-block"></div>						
+                    </div>
+                </div>  
+               
+                <div class="monthly">
+                    <p><label for="sel">采购订单访问量数据排行(前30)</label></p>
+                    <div class="img1">
+                       <div id="caigou_div_top12" style="width:1080px;height: 400px;"></div>
+                    </div>
+                </div>         
+                
+                <div class="monthly">
+                    <p><label for="sel">供应订单访问量数据排行(前30)</label></p>
+                    <div class="img1">
+                       <div id="gongying_div_top12" style="width:1080px; height: 400px;"></div>
+                    </div>
+                </div>         
+                
+                
+            </div>
+        </div>  
+  	</div>
+       
+    </body>
+</html>

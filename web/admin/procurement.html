@@ -1,0 +1,374 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> 国际采购管理  </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+        <link rel="stylesheet" href="./css/backstage.css" media="all">    
+         <script src="./js/jquery.min.js"></script>  
+		<!-- 日期控件浏览器样式兼容 -->
+		<link rel="stylesheet" href="./js/layui/css/layui.css" media="all">
+	    <script src="./js/layui/layui.all.js"></script>
+		  <script>   	
+				//日期控件
+				$(function(){
+				  layui.use('laydate', function(){
+					 var laydate = layui.laydate;
+					 laydate.render({elem: '#publishtime'});
+					
+				 }); 
+				});
+		  </script>                
+    </head>
+    <body>
+     <div class="wrap">
+        <div class="x-nav">
+            <div class="title">
+              <a><cite>国际采购管理</cite></a>
+              <a href="cgAddModify.html">新增采购订单</a>
+            </div>         
+        </div>
+        <form action=""  method="post" id="searchform"  >
+               <div class="form">
+                 <p><span>检索区:</span> <span>按订单名称</span> <input type="text"  name="orderNamech" id="orderNamech" ></p>
+                 <p><span>按发布企业</span> <input type="text"  name="comname" id="comname" >  </p>
+                 <p><span>按发布时间</span> <input type="text" autocomplete="off" placeholder="开始日期"  name="publishtime" id="publishtime"></p>
+                 <p><span>按所属行业</span> 
+                       <select name="businessid" lay-verify=""  id="businessid">
+                       <option value="">全部</option>
+                        <option value="1">轻工业类</option>
+                        <option value="2">重工业类</option>
+                        <option value="3">农业类</option>
+                        <option value="4">纺织类</option>
+                        <option value="5">日用百货类</option>
+                        <option value="6">食品类</option>
+                        <option value="7">运动休闲类</option>
+                        <option value="8">3C产品</option>
+                      </select>    
+                  </p>                                                      
+                  <p>
+                   		<input type="hidden" name="pageNum" id="pageNum"  value="1"  />
+	                  <button class="btn2"  οnsubmit="return false;"  onclick="search()" id="searchbtn"  >
+						<i class="layui-icon">&#xe615;</i> 搜索
+					</button>
+					
+                 </p>
+              </div>                   
+            </form>
+        <div class="x-body">       
+            <table  class="layui-table" id="table">
+                <thead>
+                    <tr>
+                        <th>发布时间</th>
+                        <th>采购订单名称（中文）</th>
+                        <th>发布企业</th>
+                        <th>行业分类</th>
+                        <th>订单状态</th>
+                        <th>是否推荐</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody   id="ordertbody">
+                <!--
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >2021-1-5</td>
+                        <td ><a href="supplyInformation.html">履带式水井钻机</a></td>
+                        <td> 沈阳百得威远科技有限公司</td>
+                        <td>重工业类</td> 
+                        <td>已完成</td> 
+                        <td>是</td> 
+                        <td class="td-manage">
+                            <a class='mlbtn'>修改</a>
+                            <a class='mlbtn'>删除</a>
+                        </td>
+                    </tr>
+                      -->
+                </tbody>
+            </table>
+            
+            <div class="pagelist">
+	            <ul class="nav">
+                   <li><a href="#"> < </a></li>
+                   <li class='active'><a href="#">1</a></li>
+                   <li><a href="#">2</a></li>
+                   <li><a href="#">3</a></li>
+                   <li> <a href="#">></a> </li>
+	            </ul>
+	        </div>  
+        </div>
+        </div> 
+
+        <script>
+        $(function(){
+        	//阻止按钮提交动作
+        	document.querySelector('#searchbtn').addEventListener('click',function(e){
+        	    e.preventDefault();
+        	},false);
+
+         	//初始化订单列表
+        	showOrders(1);
+        	//给表单中的查询按钮添加事件
+        	$("#searchbtn").click(function(){
+        		
+        		showOrders("1"); 
+        		
+        	});
+        	
+        });
+        
+        function showOrders(pn){ 
+        	var formData = new FormData($('#searchform')[0]);  
+        	$("#pageNum").val(pn);
+    	    $.ajax({
+                type:"POST",
+                url:"findPurchaseOrderList",
+                data: formData, //$("#searchform").serialize(),
+                processData: false,
+                contentType: false,
+                async:false,
+                success:function(data){  
+                	
+                	json_data=eval(data);
+                    
+                    $("#ordertbody").empty();
+                	
+                	$.each(json_data.obj.list, function(i, order) { 
+                		  tr = orderTr(order,pn);  
+                		  
+                 		 $("#ordertbody").append(tr);
+                	});
+                	//分页工具条
+                	pageFun(data);
+                }
+            });
+    	
+    	}
+        
+        function orderTr(order,pn){
+        	trade="进行中";
+        	if(order.tradeflag=="1"){
+        		trade="已完结";
+        	}
+        	recom = "否";
+        	if(order.recomflag=="1"){
+        		recom="是";
+        	}
+        	var ostr=
+    	        '      <tr> '
+                +'        <td > ' + order.publishtime + '</td> '
+                +'        <td ><a href="purchaseInformation.html?orderid='+order.orderid+'"  class="demo"> ' + order.shortOrderName + '</a></td> '
+                +'        <td>  '+order.shortComname +'</td> '
+                +'        <td> '+order.businessName+'</td>  '
+                +'        <td> '+trade +'</td>  '
+                +'        <td> '+recom +'</td>  '
+                +'        <td class="td-manage"> '
+                +'            <a class="mlbtn"  href="cgAddModify.html?orderid='+order.orderid+'"  >修改</a> '
+                +'            <a class="mlbtn"  href="javascript:void(0);"  onclick="orderdel('+order.orderid+','+pn+')">删除</a> '
+                +'        </td> '
+                +'    </tr> ';
+        	return ostr;
+        }
+        
+        //分页工具条
+    	function pageFun(json_data){
+    		pageinfo="";
+    		//总页数
+         	pagenums=parseInt(json_data.obj.pages);
+    		//当前页
+         	pagecurrent=parseInt(json_data.obj.pageNum); 
+    		//可视页数
+    		showpages=13;
+    		
+         	if(pagecurrent>1){
+         		pageinfo+="<li><a href='javascript:void(0);' onclick=\"showOrders('"+(pagecurrent-1)+"')\"> < </a></li>";
+         	}else{
+         		pageinfo+="<li><a href='javascript:void(0);'> < </a></li>";
+         	}     	
+         	for_begin=1;
+         	for_judge=1;
+         	pageinf_begin="";
+         	pageinf_end="";
+         	if(pagenums>0){
+    	     	if(pagenums<=showpages){ 
+    	     		for_begin=1;
+    	     		for_judge=pagenums;
+    	     		pageinf_begin="";
+    	     		pageinf_end="";
+    	     	}
+    	     	else if(pagenums>showpages && pagecurrent==1){
+         		  for_begin=1;
+    	     	  for_judge=showpages;
+    	     	  pageinf_begin="";
+    	     	  pageinf_end="<li><a>...</a></li>";     		   
+         	   }
+    	     	else if(pagenums<=(pagecurrent+showpages) && pagecurrent>1){
+         		  for_begin=pagecurrent;
+    	     	  for_judge=pagenums;
+    	     	  pageinf_begin="<li><a>...</a></li>";
+    	     	  pageinf_end="";
+         	   }
+    	     	else if(pagenums>(pagecurrent+showpages) && pagecurrent>1){
+         		  for_begin=pagecurrent;
+    	     	  for_judge=pagecurrent+showpages-1;
+    	     	  pageinf_begin="<li><a>...</a></li>";
+    	     	  pageinf_end="<li><a>...</a></li>";
+         	   }
+         	   
+         	  pageinfo+=pageinf_begin; 
+         	  for(i=for_begin;i<=for_judge;i++){
+       			if(i==pagecurrent){
+       				pageinfo+="<li  class='active'><a href='javascript:void(0);' onclick=\"showOrders('"+i+"')\">"+i+"</a></li>";
+       			}else{
+       				pageinfo+="<li><a href='javascript:void(0);' onclick=\"showOrders('"+i+"')\">"+i+"</a></li>";
+       			}
+       	      }  
+         	  pageinfo+=pageinf_end;
+         	
+         	 if(pagecurrent<pagenums){
+         		pageinfo+="<li><a href=\"javascript:showOrders('"+(pagecurrent+1)+"')\"> > </a></li>";
+         	 }else{
+         		pageinfo+="<li><a href='javascript:void(0);'> > </a></li>";
+         	 } 
+         	$(".pagelist ul").empty();
+         	 $(".pagelist ul").append( pageinfo );
+         	 }
+    	}
+        
+        
+
+    	
+        function orderdel(orderid,pn){   
+        	if(confirm("确实要删除吗?")){ 
+         	 $.ajax({
+                 type:"GET",
+                 url:"deletePurchaseOrder?orderid="+orderid,
+                 dataType:"json",
+                 success:function(data){   
+                 	json_data=eval(data);
+                    if (json_data.status==200){
+                        
+                        showOrders(pn)
+                    	}
+                    }
+             });
+        	};
+        }
+        </script>
+
+            
+    </body>
+</html>

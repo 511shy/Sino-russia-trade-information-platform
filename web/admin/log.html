@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>系统操作日志</title>
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="./css/x-admin.css" media="all">
+<link rel="stylesheet" href="./css/backstage.css" media="all">
+<script src="js/line.js"></script>
+<script src="./js/jquery.min.js"></script>
+<link rel="stylesheet" href="./js/layui/css/layui.css" media="all">
+<script src="./js/layui/layui.all.js"></script>
+
+<script>   	
+		//日期控件
+		$(function(){
+		  layui.use('laydate', function(){
+			 var laydate = layui.laydate;
+			 laydate.render({elem: '#searchbegin'});
+			 laydate.render({elem: '#searchend'});
+		 }); 
+		});
+		
+
+        $(function(){     	
+        	//查询所有的管理员名字,用于下拉列表
+        	$.ajax({
+        		url:"../admin/listAdmin",
+        		async:false,
+        		success:function(result){
+        			var adminList=result.obj; 
+        			$("#adminName").empty();
+        			$("#adminName").append("<option value=''>全部</option>");
+        			
+        			var str="";
+        			for(var i=0;i<adminList.length;i++){
+        				var admin=adminList[i];
+        				str="<option value='"+admin.adminName+"'>"+admin.adminName+"</option>" ;
+        				$("#adminName").append(str);
+        			}
+        		}
+        	});
+        	
+        	 search();
+        });
+        
+        function search(){
+        	var moduleName= $("#moduleName").val();
+        	var adminName= $("#adminName").val();
+        	var searchbegin= $("#searchbegin").val();
+        	var searchend= $("#searchend").val();
+        	var pageIndex=1;  //当前是第几页,默认是第一页       	
+        	renderData(pageIndex,moduleName,adminName,searchbegin,searchend);
+        }
+             
+        function renderData(pageIndex,moduleName,adminName,searchbegin,searchend){
+        	$("tbody").empty();
+
+        	$.ajax({
+        		url:"../admin/logList",
+        		data:{moduleName:moduleName,adminName:adminName,searchbegin:searchbegin,searchend:searchend,page:pageIndex,limit:15},
+        		dataType:"json",
+        		async:false,
+        		success:function(result){
+        			var logList=result.obj.list;
+        			for(var i=0;i<logList.length;i++){
+        				var log=logList[i];
+ 				
+        				var tr="";
+        	        	tr+="<tr>";
+        	        	tr+="<td >"+log.logTime+"</td>";
+        	        	tr+="<td >"+log.adminName+"</td>";
+        	        	tr+="<td>"+log.module+"</td>";
+        	        	tr+="<td >"+log.title+"</td>" ;
+        	        	tr+="<td>"+log.content+"</td>";
+        	        	tr+="</tr>";
+
+        	        	$("#tbody").append(tr);	
+        			}
+        			
+        			pageFun(result.obj,moduleName,adminName,searchbegin,searchend);
+        		}
+        	});
+        }
+
+        </script>
+        
+        <script>
+        
+       	   //分页函数
+	    	function pageFun(data,moduleName,adminName,searchbegin,searchend){
+	    		pageinfo="";
+	    		//总页数
+	         	pagenums=parseInt(data.pages);
+	    		//当前页
+	         	pagecurrent=parseInt(data.pageNum); 
+	    		//可视页数
+	    		showpages=15;
+	    		
+	         	if(pagecurrent>1){
+	         		pageinfo+="<li><a href='javascript:void(0);' onclick=\"renderData("+(pagecurrent-1)+",'"+moduleName+"','"+adminName+"','"+searchbegin+"','"+searchend+"')\"> < </a></li>";
+	         	}else{
+	         		pageinfo+="<li><a href='javascript:void(0);'> < </a></li>";
+	         	}     	
+	         	for_begin=1;
+	         	for_judge=1;
+	         	pageinf_begin="";
+	         	pageinf_end="";
+	         	if(pagenums>0){
+	    	     	if(pagenums<=showpages){ 
+	    	     		for_begin=1;
+	    	     		for_judge=pagenums;
+	    	     		pageinf_begin="";
+	    	     		pageinf_end="";
+	    	     	}
+	    	     	else if(pagenums>showpages && pagecurrent==1){
+	         		  for_begin=1;
+	    	     	  for_judge=showpages;
+	    	     	  pageinf_begin="";
+	    	     	  pageinf_end="<li><a>...</a></li>";     		   
+	         	   }
+	    	     	else if(pagenums<=(pagecurrent+showpages) && pagecurrent>1){
+	         		  for_begin=pagecurrent;
+	    	     	  for_judge=pagenums;
+	    	     	  pageinf_begin="<li><a>...</a></li>";
+	    	     	  pageinf_end="";
+	         	   }
+	    	     	else if(pagenums>(pagecurrent+showpages) && pagecurrent>1){
+	         		  for_begin=pagecurrent;
+	    	     	  for_judge=pagecurrent+showpages-1;
+	    	     	  pageinf_begin="<li><a>...</a></li>";
+	    	     	  pageinf_end="<li><a>...</a></li>";
+	         	   }
+	         	   
+	         	  pageinfo+=pageinf_begin; 
+	         	  for(i=for_begin;i<=for_judge;i++){
+	       			if(i==pagecurrent){
+						pageinfo+="<li  class='active'><a href='javascript:void(0);' onclick=\"renderData("+i+",'"+moduleName+"','"+adminName+"','"+ searchbegin+"','" + searchend+"')\">"+i+"</a></li>";
+	       			}else{
+	       				pageinfo+="<li><a href='javascript:void(0);' onclick=\"renderData("+i+",'"+moduleName+"','"+adminName+"','"+ searchbegin+"','" + searchend+"')\">"+i+"</a></li>";
+	       			}
+	       	      }  
+	         	  pageinfo+=pageinf_end;
+	         	
+	         	 if(pagecurrent<pagenums){
+	         		pageinfo+="<li><a href=\"javascript:renderData("+(pagecurrent+1)+",'"+moduleName+"','"+adminName+"','"+ searchbegin+"','"+  searchend+"')\"> > </a></li>";
+	         	 }else{
+	         		pageinfo+="<li><a href='javascript:void(0);'> > </a></li>";
+	         	 } 
+	             $(".pagelist ul").empty();
+	         	 $(".pagelist ul").append( pageinfo );
+	         	 }
+	    	}
+   
+     
+        </script>
+</head>
+<body>
+<div class="wrap">
+	<div class="x-nav">
+		<div class="title">
+			<a><cite>系统日志查询</cite></a> 
+		</div>
+
+	</div>
+
+	
+	<div class="form">
+			<p><span>检索区:</span></p> 
+			<p>
+				<span>系统模块</span> 
+				<select id="moduleName" >
+					<option value="" >全部</option>
+					<option value="vip企业管理" >vip企业管理</option>
+					<option value="普通企业管理" >普通企业管理</option>
+					<option value="国际采购" >国际采购</option>
+					<option value="国际供应" >国际供应</option>
+					<option value="国际物流" >国际物流</option>
+					<option value="关于我们" >关于我们</option>
+					<option value="首页管理" >首页管理</option>
+					<option value="系统权限管理" >系统权限管理</option>
+					
+				</select> 
+			</p> 
+			<p>
+				<span>管理员</span> 
+				<select id="adminName" >
+			
+				</select> 
+				
+			</p> 
+			<p><span>搜索日期</span> <input   id="searchbegin" placeholder="开始日期"/> </p> 
+			<p><span>到</span> <input   id="searchend" placeholder="截止日期"/></p> 
+			<p><button class="btn2" onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button></p> 
+	</div>
+	  	      
+	<div class="x-body">
+            <table  class="layui-table" id="table">
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>管理员 </th>
+                        <th>业务模块</th>
+                        <th>操作内容</th>
+                        <th>具体信息</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                </tbody>
+            </table>
+
+	        <div class="pagelist">
+	            <ul class="nav">
+	            </ul>
+	        </div>     
+	</div>
+</div>
+
+</body>
+</html>

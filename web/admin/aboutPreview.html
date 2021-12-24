@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们预览</title>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <script src="../js/jquery-1.10.2.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/base.js"></script>
+    <script>
+        $(function(){
+            var aboutValue = sessionStorage.getItem("aboutpre");
+            console.log("aa:"+aboutValue);
+            aboutValue=jQuery.parseJSON(aboutValue);
+
+            //新闻标题
+           // $("#about-wrap .about-title h2").append(aboutValue.title);
+            if(aboutValue.title==""){
+                $("#about-wrap .about-title h2").append("<h4 style='color:#f00'>请填写数据</h4>");
+            }else{
+                $("#about-wrap .about-title h2").append(aboutValue.title);
+            }
+
+          //  $("#about-wrap p").append("<h4>摘要: </h4>"+aboutValue.intro);
+
+            //新闻内容
+           // $("#about-wrap .about-content").append(aboutValue.detail2);
+
+            if(aboutValue.detail2==""){
+                $("#about-wrap .about-content").append("<h4 style='color:#f00'>请填写数据</h4>");
+            }else{
+                $("#about-wrap .about-content").append(aboutValue.detail2);
+            }
+
+        });
+    </script>
+    <style>
+        #about-wrap{
+            width:1000px;
+            margin:0 auto;
+            padding:0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="about-wrap">
+    <div class="row">
+        <div  class="col-md-12 information" >
+        	<div onclick="window.close();" style="font-size:18px">关闭</div>
+            <div class="about-title">
+                <h2 align="center"></h2>
+
+            </div>
+            <hr>
+            <p></p>
+            <div class="about-content"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

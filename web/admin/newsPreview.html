@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新闻预览</title>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <script src="../js/jquery-1.10.2.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/base.js"></script>
+    <script>
+    $(function(){
+    	var newsValue = sessionStorage.getItem("newspre");
+    	newsValue=jQuery.parseJSON(newsValue);
+    	
+    	//新闻标题
+    	$("#new-wrap .new-title h2").append(newsValue.title);
+    	
+    	$("#new-wrap .new-title p").append("发布人:"+newsValue.writer);
+    	
+    	//新闻内容
+    	$("#new-wrap .news-content").append(newsValue.content);
+  
+    });
+   </script>
+   <style>
+	 #new-wrap{
+	 	width:1000px;
+	    margin:0 auto;
+	    padding:0;
+	 }
+   </style>
+</head>
+<body>
+     
+     <div class="container" id="new-wrap">       
+        <div class="row">                
+            <div  class="col-md-12 information" > 
+               <div onclick="window.close();" style="font-size:18px">关闭</div>     
+               <div class="new-title">
+                    <h2></h2>
+                    <p></p>
+               </div>
+               <div class="news-content"></div>
+             </div>            
+            </div>
+     </div>
+</body>
+</html>

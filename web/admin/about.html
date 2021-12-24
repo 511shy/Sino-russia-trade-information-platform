@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>关于我们管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="./css/x-admin.css" media="all">
+    <link rel="stylesheet" href="./css/backstage.css" media="all">
+</head>
+<body>
+  <div class="wrap">
+	<div class="x-nav">
+    <div class="title">
+        <a><cite>关于我们管理</cite></a>
+    </div>
+</div>
+<div class="x-body">
+    <form class="fom" id="form1" enctype="multipart/form-data">
+    	<table class="infotable" >
+    		<tr>         
+				<td width="20%"> 
+				  	<label>标 题  </label>              				  
+				</td>
+				<td width="55%">
+					<input type="hidden" name="id" />
+					<input type="text" placeholder="标题输入" id="L_title" name="title"  class="inp" />
+				</td>
+				<td width="20%">
+					<span class="msg">*</span>
+				</td>
+			  </tr>			 
+			   <tr>         
+				<td> 
+				  	<label>资讯图片上传</label>              				  
+				</td>
+				<td colspan="2">
+				   <div class="lableft">
+						<div class="files" style='width:150px;'>
+							<div class="imgdiv" style='height:100px'>
+								<img src="" id="showimg" />
+								<input type="hidden" name="havepic">
+							</div>
+							<a href="javascript:;" class="but-upload">                          
+								<input type="file" name="fileImg" onchange="filefun(this)"/>上传图片
+							</a>					
+						</div>
+					</div>
+					 <div>
+						<p >建议图片尺寸488*300</p>
+						<p class="msg"></p>
+					</div>
+				</td>				
+			  </tr>
+			   <tr>         
+				<td > 
+				  	<label>首页摘要  </label>              				  
+				</td>
+				<td colspan="2">					
+					<textarea  name="intro" class="inp" style=" height:100px" id="intro"
+					  placeholder="输入文字摘要，建议200字以内" maxlength="200" ></textarea>
+					<p class="msg"></p>
+				</td>
+			  </tr>
+			   <tr>         
+				<td >
+				  	<label>详细内容  </label>           				  
+				</td>
+				<td colspan="2">					
+					<textarea id="detail" name="detail" class="content"> </textarea>
+					<input type="hidden" name="detail2" />
+					<p class="msg"></p>
+				</td>
+			  </tr>
+			   <tr>
+				<td> </td>
+				<td colspan="2">				  
+					<input type="button" id="addBtn"  class="btn" value="提交"/>                  
+					<input type="button" id="preview"  class="btn" value="预览"/>  				 
+				</td>
+			  </tr>
+    	</table>
+    </form>
+</div>
+</div>
+<script src="./lib/layui/layui.js" charset="utf-8"></script>
+<script src="./js/x-layui.js" charset="utf-8"></script>
+<script src="./js/jquery.js" charset="utf-8"></script>
+
+<link rel="stylesheet" href="../kindeditor/themes/default/default.css"/>
+<link rel="stylesheet" href="../kindeditor/plugins/code/prettify.css"/>
+<script charset="utf-8" src="../kindeditor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
+<script charset="utf-8" src="../kindeditor/plugins/code/prettify.js"></script>
+
+
+<script>
+    layui.use(['form', 'layer', 'layedit'], function () {
+        $ = layui.jquery;
+        var form = layui.form()
+            , layer = layui.layer
+            , layedit = layui.layedit;
+
+
+        layedit.set({
+            uploadImage: {
+                url: "./upimg.json" //接口url
+                , type: 'post' //默认post
+            }
+        })
+
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            console.log(data);
+            layer.alert("保存成功", {icon: 6}, function () {
+                // 获得frame索引
+                var index = parent.layer.getFrameIndex(window.name);
+                //关闭当前frame
+                parent.layer.close(index);
+            });
+            return false;
+        });
+    });
+
+    //富文本
+    KindEditor.ready(function (K) {
+            editor1 = K.create('textarea[id="detail"]', {
+            cssPath: '../kindeditor/plugins/code/prettify.css',
+            height: '400px',
+			width: '710px',
+
+            uploadJson: '../admin/uploadimg', //对应后台controller
+            allowFileManager : false,
+	        allowImageRemote: false,
+            afterBlur: function () {  //解决js无法提交的bug
+                this.sync();
+            }
+        });
+        prettyPrint();
+    });
+
+    //提交关于我们
+    $("#addBtn").click(function () { 
+    	$(".msg").html("");
+		if($("#L_title").val()==""){
+			$(".msg").eq(0).html("标题不能为空！");
+		}
+		else if($("#showimg").attr("src")==""){ 
+			$(".msg").eq(1).html("图片不能为空！");
+		}
+		else if($("#intro").val()==""){ 
+			$(".msg").eq(2).html("首页摘要不能为空！");
+		}
+		else if($("#intro").val().length>200){ 
+			$(".msg").eq(2).html("首页摘要在200字以内！");
+		}
+
+		//var detailed=editor1.html();   //此处不要取$("#detailed").val(),会有bug
+		else if(editor1.html().trim()==""){
+			$(".msg").eq(3).html("详细内容不能为空！");
+		}
+		else {
+			var formData = new FormData($('#form1')[0]);
+			console.log(formData);
+
+			$.ajax({
+				type: "POST",
+				url: "../aboutus/updateaboutus",
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function (data) {
+					 // alert("dddd");
+					json_data = eval(data);
+					console.log(json_data);
+				}
+			});
+			alert("提交成功！");
+		}
+    });
+
+    //上传图片显示
+    $(":input[name='fileImg']").change(function(){
+        if(this.files.length){
+            let file = this.files[0];
+            let reader = new FileReader();
+            reader.onload = function(){
+                $('#showimg').attr("src", this.result).css({width:"100%",height:"100%"});
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    //预览
+    $("#preview").click(function(){
+		$(":input[name='detail2']").val(editor1.html()); //隐藏域
+		aboutPreview();
+    });
+
+    //关于我们预览
+    function aboutPreview(){
+        //设置html5本地存储
+        var formData = new FormData($('#form1')[0]);
+        console.log(formData);
+
+        var objData = {};
+        formData.forEach((value, key) => {
+        	objData[key] = value;
+        	console.log("key= "+key)
+        	console.log("value= "+value);
+        } );
+        sessionStorage.setItem("aboutpre", JSON.stringify(objData));
+        var tempwindow=window.open('_blank');
+        tempwindow.location.href="aboutPreview.html";
+    }
+
+	//上传图片显示
+	function filefun(th){			
+		var file= th.files[0]
+		if(/image\/\w+/.test(file.type)){
+               var read=new FileReader()
+               read.readAsDataURL(file)
+               read.onload=function(ev){		            	  
+            	  var img=new Image()
+                  var data=this.result;  		            	  		            	  
+                  img.src=data	
+                  img.onload = function() {
+            		   if(this.width=="488"&&this.height=="300"){
+            			document.getElementsByClassName("imgdiv")[0].innerHTML=""
+            			img.style.width="150px";
+			            img.style.height="100px";
+			            document.getElementsByClassName("imgdiv")[0].appendChild(img)
+			            document.getElementsByClassName("msg")[1].innerHTML=""
+            		   }else{
+            			   document.getElementsByClassName("msg")[1].innerHTML="图片比例不正确"
+            		   }
+            	};		            		  		                 	                  
+               }
+            }
+        else{
+             document.getElementsByClassName("msg")[1].innerHTML="请上传图片格式"
+        }
+	}
+
+	//显示修改关于我们的内容
+	function aboutLoad() {
+		$.ajax({
+			type: "GET",
+			url: "../aboutus/dispaboutus",
+			dataType: "json",
+			success: function (data) {
+				json_data = eval(data);
+
+				// console.log(json_data);
+				$("input[name='id']").val(json_data.obj.id);
+				$("input[name='title']").val(json_data.obj.title);
+				//不修改的原有图片名
+				$("input[name='havepic']").val(json_data.obj.pic);
+				$('#showimg').attr("src", "../"+json_data.obj.pic).css({width:"100%",height:"100%"});
+				$(":input[name='intro']").val(json_data.obj.intro);
+				//富文本内容回显
+				editor1.html(json_data.obj.detail);
+
+				$(":input[name='detail2']").val(editor1.html()); //隐藏域
+			}
+		});
+	}
+
+	$(function () {
+		aboutLoad();
+	});
+
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> 新建管理员帐号 </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+        <link rel="stylesheet" href="./css/backstage.css" media="all">   
+        <script src="./js/jquery.min.js"></script>
+
+        <script>
+			function addAdmin(){
+				if(validate()==true){
+					if(confirm("确定提交吗?")==true){
+					  $.ajax({
+		 	    			url:"../admin/addAdmin",
+		 	    			type:"post",
+		 	    			data:{
+		 	    				adminName:$("#adminName").val(),
+		 	    				password:$("#password").val(),
+		 	    				role:$("input[name='role']:checked").val(),
+		 	    				phone:$("#phone").val(),
+		 	    				realName:$("#realName").val()			
+		 	    			},
+		 	    			
+		 	    			dataType:"json",
+		 	    			success:function(data){
+		 	    				alert(data.message);
+		 	    				window.location.href="system.html";
+		 	    			}
+		 	    			
+		 	    		});
+					 }
+				}
+			}
+
+	        function validate(){
+	        	$(".msg").html("");
+	        	var result=true;
+	        	var adminName =$("#adminName").val();
+				var password  = $("#password").val();
+				var realName= $("#realName").val();		
+				var confirm= $("#confirm").val();		
+				var phone=$("#phone").val();
+				
+				//var errorStr="";
+				//验证手机号
+				var reg1 = /^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8,6]|8[0-9]|9[1,8,9])\d{8}$/;
+				//验证密码
+				var reg2=/^[0-9A-Za-z]{6,20}$/;
+				var obj="";
+				$.ajax({
+						url:"../admin/checkAdminName",
+						type:"post",
+						data:{adminName:adminName},
+						async:false,
+						success:function(data){
+							if(data.obj=='0'){
+								obj	=data.obj							
+							}
+						}	
+				});
+				//验证用户名
+				if(adminName==""){
+					result=false;
+					$("#adminName_msg").text("账号不能为空")
+				}
+				else if(obj=='0'){
+			    	result=false;
+					$("#adminName_msg").text("账号 "+adminName +" 已经被其他用户使用!")
+				}		
+				
+				if(realName==""){
+					result=false;
+					$("#realName_msg").text("真实姓名不能为空")
+				}
+				
+				if(phone.length!=11 || reg1.test(phone)==false){
+					result=false;
+    				$("#phone_msg").text("手机号格式不正确!")
+    			}
+				//验证密码
+				if(password==""){
+					result=false;
+					$("#password_msg").text("密码不能为空!")
+				}
+				if(reg2.test(password)==false){
+					result=false;
+					$("#password_msg").text("格式不正确,应为6-20位字母或数字!")
+				}
+			    if(password!=confirm){
+			    	result=false;
+					$("#confirm_msg").text("两次输入的密码不一致!")
+				}
+				
+			    return result;
+	        }
+      
+        </script>
+        
+
+    </head>
+    
+    <body>
+     <div class="wrap">
+        <div class="x-nav">
+            <div class="title">
+              <a><cite>系统设置 >> 新建管理员帐号</cite></a>               
+              <a  class="back" onclick="window.history.back(-1)">返回上页</a>
+        	</div>        
+        </div>
+        <div class="x-body">
+         	 <form action="" class="fom">
+         	 	<div class="adduser clearfix">
+                  <div class="adminimg"> <img src="images/admin.png" ></div>
+                   <div class="inputright">
+                       <h2>新建管理员账号</h2>
+                       <p>
+                        <label> 管理员账号</label>
+                        <input id="adminName" class="lg"  placeholder="输入账号" ><span class="msg" id="adminName_msg">*</span>
+                       </p>
+                      <p>
+                        <label>管理员真实姓名</label>
+                        <input id="realName" class="lg" placeholder="管理员真实姓名"> <span class="msg" id="realName_msg">*</span>
+                      </p>                      
+                      <p>
+                        <label>管理员角色</label>
+                        <input type="radio"  name="role" value="普通管理员" checked >普通管理员    
+                        <input type="radio"  name="role"  value="超级管理员" > 超级管理员
+                      </p>                                           
+                     <p>
+                        <label>联系方式</label>
+                        <input id="phone" class="lg" placeholder="输入手机号"> <span class="msg" id="phone_msg">*</span>
+                     </p>
+                     <p>
+                        <label>登录密码</label>
+                        <input id="password" type="password" class="lg" placeholder="6-20位字母或数字"> <span class="msg" id="password_msg">*</span>
+                     </p>                     
+                      <p>
+                        <label>确认密码</label>
+                        <input id="confirm"  type="password" class="lg" placeholder="确认密码"> <span class="msg" id="confirm_msg">*</span>
+                      </p>                     
+                      <p>
+                        <input id="btnAdd" type="button" value="提交" class="btn" onclick="addAdmin()"  >
+                      </p>
+                   </div>            
+         		</div>
+          </form>              
+    </div>
+</div>
+</body>
+
+</html>

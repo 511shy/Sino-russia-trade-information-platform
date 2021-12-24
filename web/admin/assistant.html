@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>外贸助手</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+        <link rel="stylesheet" href="./css/backstage.css" media="all">
+        <script src="js/jquery.min.js"></script>       
+        <script src="./lib/layui/layui.js" charset="utf-8"></script>
+        <script src="./js/x-layui.js" charset="utf-8"></script>
+        
+     </head>
+    <body>
+    <div class="wrap">
+        <div class="x-nav">
+            <div class="title">
+              <a><cite>新闻资讯管理 >> 外贸助手</cite></a>
+            </div>          
+        </div>
+        <div class="x-body">
+        	<div class="fom">
+				<table class="infotable wmzs">
+					<tr>         
+						<td width="30%"> 
+						  	<label>名称1</label> 
+                           <input type="text" name="assis_text" placeholder="国际快递查询">               				  
+						</td>
+						<td width="40%">
+							 <label>访问网址</label> 
+                           <input type="text" name="assis_url" value="http://" size="30">    
+						</td>
+						<td width="20%">
+							  <button class="btn" name="assis_submit" onclick="modifyAssistant(0,0)" > 提 交</button>
+							  <span class="msg"></span>  
+						</td>
+			  		</tr>
+			  		<tr>         
+						<td> 
+						  	 <label>名称2</label> 
+                         	 <input type="text" name="assis_text" placeholder="国际快递查询">  							     				  
+						</td>
+						<td>
+							 <label>访问网址</label> 
+                           	 <input type="text" name="assis_url" value="http://" size="30">      	               
+						</td>
+						<td>
+							<button class="btn" name="assis_submit" onclick="modifyAssistant(0,1)" > 提 交</button>
+							<span class="msg"></span>  
+						</td>
+			  		</tr>
+			  		<tr>         
+						<td> 
+						  	 <label>名称3</label> 
+                           	 <input type="text" name="assis_text" placeholder="国际快递查询">              				  
+						</td>
+						<td>
+							  <label>访问网址</label> 
+                           	  <input type="text" name="assis_url" value="http://" size="30">             
+						</td>
+						<td>
+							<button class="btn" name="assis_submit" onclick="modifyAssistant(0,2)" > 提 交</button>
+							<span class="msg"></span>  
+						</td>
+			  		</tr>
+			  		<tr>         
+						<td> 
+						  	 <label >名称4</label> 
+                           	 <input type="text" name="assis_text" placeholder="国际快递查询">            				  
+						</td>
+						<td>
+							 <label>访问网址</label> 
+                             <input type="text" name="assis_url" value="http://" size="30">             
+						</td>
+						<td>
+							<button class="btn" name="assis_submit" onclick="modifyAssistant(0,3)" > 提 交</button>
+							<span class="msg"></span>  
+						</td>
+			  		</tr>
+			  		<tr>         
+						<td> 
+						  	<label>名称5</label> 
+                           <input type="text" name="assis_text" placeholder="国际快递查询">              				  
+						</td>
+						<td>
+							 <label>访问网址</label> 
+                           <input type="text" name="assis_url" value="http://" size="30">                  
+						</td>
+						<td>
+							<button class="btn" name="assis_submit" onclick="modifyAssistant(0,4)" > 提 交</button>
+							<span class="msg"></span>  
+						</td>
+			  		</tr>
+			  		<tr>         
+						<td> 
+						  	<label for="name1">名称6</label> 
+                           <input type="text" name="assis_text" placeholder="国际快递查询">                 				  
+						</td>
+						<td>
+							 <label for="name2">访问网址</label> 
+                           <input type="text" name="assis_url" value="http://" size="30">                   
+						</td>
+						<td>
+							<button class="btn" name="assis_submit" onclick="modifyAssistant(0,5)"> 提 交</button>
+							<span class="msg"></span>  
+						</td>
+			  		</tr>
+				</table>
+			</div>
+   		</div>
+   		</div>
+   		
+    </body>
+     <script>
+        $(function(){
+        	//加载外贸助手数据
+        	showAssistant();
+      
+        });
+        //外贸助手数据列表
+        function showAssistant(){ 
+    	    $.ajax({
+                type:"POST",
+                url:"../assistant/assistantlist",
+                dataType:"json",
+                success:function(data){   
+                	json_data=eval(data);
+                    console.log(json_data);                   
+                	$.each(json_data.obj, function(i, item) {
+                		
+                  		$(".infotable tr").eq(i).find(":input[name='assis_text']").val(item.aname);
+                    	$(".infotable tr").eq(i).find(":input[name='assis_url']").val(item.address);                    
+                    	$(".infotable tr").eq(i).find("button[name='assis_submit']")
+                    	                       .attr("onclick","modifyAssistant("+item.id+","+i+")"); 
+                	});	
+                }
+            });
+        } 
+        //外贸助手数据新增与修改
+        //arg: id 已有数据id   ele_n 元素排列序列
+        function modifyAssistant(id,ele_n){
+      		assis_text=$(".infotable tr").eq(ele_n).find("td input[name='assis_text']").val();
+    		assis_url=$(".infotable tr").eq(ele_n).find("td input[name='assis_url']").val();
+    		$(".msg").text("")
+    		if(assis_text==""){
+    			$(".infotable tr").eq(ele_n).find(".msg").text("名称不能为空")
+    			return;
+	    	}
+    		else if(assis_url==""){
+    			$(".infotable tr").eq(ele_n).find(".msg").text("网址不能为空")
+    			return;
+    		}
+    		else{
+    			if(id==0){    
+	        		url="../assistant/addassitant?address="+assis_url+"&aname="+assis_text;
+	        	}else{
+	        		url="../assistant/updateassistant?address="+assis_url+"&aname="+assis_text+"&id="+id;
+	        	}
+	        	  $.ajax({
+	                  type:"POST",
+	                  url:url,
+	                  dataType:"json",
+	                  async: false,
+	                  success:function(data){   
+	                  	json_data=eval(data);
+	                    if(json_data.status==200){
+	                    	alert("更新成功！");
+	                    	showAssistant();
+	                    	
+	                    }       
+	                   }
+	              });
+    		}
+        }
+         </script>
+</html>
